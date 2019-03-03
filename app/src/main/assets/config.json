@@ -1,0 +1,10 @@
+{
+  "api": {
+    "base_url": "http://ec2-54-144-207-51.compute-1.amazonaws.com:8410/",
+    "connect_timeout": 30,
+    "read_timeout": 30,
+    "write_timeout": 80,
+    "cache_size": 1046,
+    "max_intents": 3,
+  }
+}
