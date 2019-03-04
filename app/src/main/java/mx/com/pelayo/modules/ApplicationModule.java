@@ -10,6 +10,8 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.inject.Singleton;
 
@@ -27,6 +29,12 @@ public class ApplicationModule {
     public ApplicationModule(Application application, String configurationPath) {
         this.application = application;
         this.configurationPath = configurationPath;
+    }
+
+    @Singleton
+    @Provides
+    public Executor provideExecutor() {
+        return Executors.newCachedThreadPool();
     }
 
     /**

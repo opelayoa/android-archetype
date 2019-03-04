@@ -1,10 +1,10 @@
 {
   "api": {
-    "base_url": "http://ec2-54-144-207-51.compute-1.amazonaws.com:8410/",
+    "base_url": "http://192.168.0.2:8080/tdexpress/",
     "connect_timeout": 30,
     "read_timeout": 30,
     "write_timeout": 80,
     "cache_size": 1046,
-    "max_intents": 3,
+    "max_intents": 3
   }
 }

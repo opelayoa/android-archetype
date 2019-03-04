@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import okhttp3.Authenticator;
@@ -13,6 +14,10 @@ import okhttp3.Route;
 
 @Singleton
 public class ApiAuthenticator implements Authenticator {
+
+    @Inject
+    public ApiAuthenticator() {
+    }
 
     @Nullable
     @Override

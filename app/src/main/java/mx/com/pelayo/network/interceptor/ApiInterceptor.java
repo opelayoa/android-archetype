@@ -2,6 +2,7 @@ package mx.com.pelayo.network.interceptor;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import okhttp3.Interceptor;
@@ -10,6 +11,10 @@ import okhttp3.Response;
 
 @Singleton
 public class ApiInterceptor implements Interceptor {
+
+    @Inject
+    public ApiInterceptor() {
+    }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
