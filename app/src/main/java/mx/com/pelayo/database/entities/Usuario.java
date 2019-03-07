@@ -3,19 +3,15 @@ package mx.com.pelayo.database.entities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverters;
-import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-import mx.com.pelayo.database.DateTypeConverter;
-
 @Entity(tableName = "usuario")
-public class Usuario {
+public class Usuario implements java.io.Serializable {
+
     @PrimaryKey
-    @NonNull
     @ColumnInfo(name = "id")
     @SerializedName("id")
     private int id;
@@ -51,21 +47,19 @@ public class Usuario {
     private int perfilId;
     @ColumnInfo(name = "envio_correo")
     @SerializedName("envio-correo")
-    private int envioCorreo;
+    private boolean envioCorreo;
     @ColumnInfo(name = "user_gasto")
     @SerializedName("user-gasto")
-    private int userGasto;
+    private Integer userGasto;
     @ColumnInfo(name = "user_create")
     @SerializedName("user-create")
-    private int userCreate;
-    @TypeConverters(DateTypeConverter.class)
+    private Integer userCreate;
     @ColumnInfo(name = "date_create")
     @SerializedName("date-create")
     private Date dateCreate;
     @ColumnInfo(name = "user_modify")
     @SerializedName("user-modify")
-    private int userModify;
-    @TypeConverters(DateTypeConverter.class)
+    private Integer userModify;
     @ColumnInfo(name = "date_modify")
     @SerializedName("date-modify")
     private Date dateModify;
@@ -74,17 +68,19 @@ public class Usuario {
     private int userId;
     @ColumnInfo(name = "status")
     @SerializedName("status")
-    private int status;
+    private Boolean status;
     @ColumnInfo(name = "email_evento")
     @SerializedName("email-evento")
-    private int emailEvento;
+    private boolean emailEvento;
     @ColumnInfo(name = "puesto_id")
     @SerializedName("puesto-id")
-    private int puestoId;
+    private Integer puestoId;
 
+    public Usuario() {
+    }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(int id) {
@@ -92,7 +88,7 @@ public class Usuario {
     }
 
     public String getApellido() {
-        return apellido;
+        return this.apellido;
     }
 
     public void setApellido(String apellido) {
@@ -100,7 +96,7 @@ public class Usuario {
     }
 
     public String getNombre() {
-        return nombre;
+        return this.nombre;
     }
 
     public void setNombre(String nombre) {
@@ -108,7 +104,7 @@ public class Usuario {
     }
 
     public String getLogin() {
-        return login;
+        return this.login;
     }
 
     public void setLogin(String login) {
@@ -116,7 +112,7 @@ public class Usuario {
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {
@@ -124,7 +120,7 @@ public class Usuario {
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
@@ -132,7 +128,7 @@ public class Usuario {
     }
 
     public String getCelular() {
-        return celular;
+        return this.celular;
     }
 
     public void setCelular(String celular) {
@@ -140,7 +136,7 @@ public class Usuario {
     }
 
     public String getAlias() {
-        return alias;
+        return this.alias;
     }
 
     public void setAlias(String alias) {
@@ -148,7 +144,7 @@ public class Usuario {
     }
 
     public int getDepartamentoId() {
-        return departamentoId;
+        return this.departamentoId;
     }
 
     public void setDepartamentoId(int departamentoId) {
@@ -156,7 +152,7 @@ public class Usuario {
     }
 
     public int getSucursalId() {
-        return sucursalId;
+        return this.sucursalId;
     }
 
     public void setSucursalId(int sucursalId) {
@@ -164,55 +160,55 @@ public class Usuario {
     }
 
     public int getPerfilId() {
-        return perfilId;
+        return this.perfilId;
     }
 
     public void setPerfilId(int perfilId) {
         this.perfilId = perfilId;
     }
 
-    public int getEnvioCorreo() {
-        return envioCorreo;
+    public boolean isEnvioCorreo() {
+        return this.envioCorreo;
     }
 
-    public void setEnvioCorreo(int envioCorreo) {
+    public void setEnvioCorreo(boolean envioCorreo) {
         this.envioCorreo = envioCorreo;
     }
 
-    public int getUserGasto() {
-        return userGasto;
+    public Integer getUserGasto() {
+        return this.userGasto;
     }
 
-    public void setUserGasto(int userGasto) {
+    public void setUserGasto(Integer userGasto) {
         this.userGasto = userGasto;
     }
 
-    public int getUserCreate() {
-        return userCreate;
+    public Integer getUserCreate() {
+        return this.userCreate;
     }
 
-    public void setUserCreate(int userCreate) {
+    public void setUserCreate(Integer userCreate) {
         this.userCreate = userCreate;
     }
 
     public Date getDateCreate() {
-        return dateCreate;
+        return this.dateCreate;
     }
 
     public void setDateCreate(Date dateCreate) {
         this.dateCreate = dateCreate;
     }
 
-    public int getUserModify() {
-        return userModify;
+    public Integer getUserModify() {
+        return this.userModify;
     }
 
-    public void setUserModify(int userModify) {
+    public void setUserModify(Integer userModify) {
         this.userModify = userModify;
     }
 
     public Date getDateModify() {
-        return dateModify;
+        return this.dateModify;
     }
 
     public void setDateModify(Date dateModify) {
@@ -220,34 +216,35 @@ public class Usuario {
     }
 
     public int getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public int getStatus() {
-        return status;
+    public Boolean getStatus() {
+        return this.status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 
-    public int getEmailEvento() {
-        return emailEvento;
+    public boolean isEmailEvento() {
+        return this.emailEvento;
     }
 
-    public void setEmailEvento(int emailEvento) {
+    public void setEmailEvento(boolean emailEvento) {
         this.emailEvento = emailEvento;
     }
 
-    public int getPuestoId() {
-        return puestoId;
+    public Integer getPuestoId() {
+        return this.puestoId;
     }
 
-    public void setPuestoId(int puestoId) {
+    public void setPuestoId(Integer puestoId) {
         this.puestoId = puestoId;
     }
+
 }

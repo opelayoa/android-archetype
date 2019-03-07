@@ -8,8 +8,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import mx.com.pelayo.repository.UsuarioRepository;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
 import mx.com.pelayo.database.entities.Usuario;
+import mx.com.pelayo.repository.UsuarioRepository;
 
 @Singleton
 public class UsuarioViewModel extends ViewModel {
@@ -24,16 +26,16 @@ public class UsuarioViewModel extends ViewModel {
         this.usuarios = usuarioRepository.getAll();
     }
 
-    public void sync() {
-        usuarioRepository.sync();
+    public Observable sync() {
+        return usuarioRepository.sync();
     }
 
     public LiveData<List<Usuario>> getAll() {
         return usuarios;
     }
 
-    public void insert(Usuario usuario) {
-        usuarioRepository.insert(usuario);
+    public Completable insert(Usuario usuario) {
+        return usuarioRepository.insert(usuario);
     }
 
     public void insertAll(List<Usuario> usuarios) {
