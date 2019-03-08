@@ -6,5 +6,13 @@
     "write_timeout": 80,
     "cache_size": 1046,
     "max_intents": 3
+  },
+  "oauth2": {
+    "base_url": "http://192.200.1.119:9000/auth/",
+    "connect_timeout": 30,
+    "read_timeout": 30,
+    "write_timeout": 80,
+    "cache_size": 1046,
+    "max_intents": 3
   }
 }

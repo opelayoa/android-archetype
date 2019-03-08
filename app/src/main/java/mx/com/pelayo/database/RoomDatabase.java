@@ -32,6 +32,7 @@ import mx.com.pelayo.database.dao.TipoSucursalDao;
 import mx.com.pelayo.database.dao.TipotdDao;
 import mx.com.pelayo.database.dao.UsuarioDao;
 import mx.com.pelayo.database.dao.ZonaDao;
+import mx.com.pelayo.database.dao.security.SessionDao;
 import mx.com.pelayo.database.entities.Categoria;
 import mx.com.pelayo.database.entities.Departamento;
 import mx.com.pelayo.database.entities.DeptoSintomaDiagnostico;
@@ -59,6 +60,7 @@ import mx.com.pelayo.database.entities.TipoSucursal;
 import mx.com.pelayo.database.entities.Tipotd;
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.Zona;
+import mx.com.pelayo.database.entities.security.Session;
 
 @Database(entities = {
         // Acceso.class,
@@ -88,7 +90,9 @@ import mx.com.pelayo.database.entities.Zona;
         TipoSucursal.class,
         Tipotd.class,
         Usuario.class,
-        Zona.class
+        Zona.class,
+        // Security
+        Session.class
 }
         , exportSchema = false
         , version = 1)
@@ -96,6 +100,7 @@ import mx.com.pelayo.database.entities.Zona;
 public abstract class RoomDatabase extends android.arch.persistence.room.RoomDatabase {
 
     private static volatile RoomDatabase INSTANCE;
+    // public abstract AccesoDao accesoDao();
 
     public static RoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -109,7 +114,6 @@ public abstract class RoomDatabase extends android.arch.persistence.room.RoomDat
         }
         return INSTANCE;
     }
-    // public abstract AccesoDao accesoDao();
 
     public abstract CategoriaDao categoriaDao();
 
@@ -163,6 +167,8 @@ public abstract class RoomDatabase extends android.arch.persistence.room.RoomDat
 
     public abstract UsuarioDao usuarioDao();
 
-    public abstract ZonaDao zonaDao();
+    public abstract SessionDao sessionDao();
 
+    // Security
+    public abstract ZonaDao zonaDao();
 }

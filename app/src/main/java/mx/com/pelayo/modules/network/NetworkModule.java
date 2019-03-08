@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -29,6 +30,7 @@ public class NetworkModule {
     private static final String READ_TIMEOUT = "read_timeout";
     private static final String WRITE_TIMEOUT = "write_timeout";
     private static final String BASE_URL = "base_url";
+    public static final String OAUTH2 = "oauth2";
 
     /**
      * Crea la instancia de Caché necesaria para guardar de forma temporal las respuestas a llamadas
@@ -62,6 +64,7 @@ public class NetworkModule {
      * @see ApiAuthenticator
      */
     @Provides
+    @Named("httpClient")
     @Singleton
     public OkHttpClient provideHttpClient(
             JsonObject localConfiguration,
@@ -83,6 +86,33 @@ public class NetworkModule {
     }
 
     /**
+     * Crea la instancia OkHttpClient necesaria para las llamadas a backend para OAuth2
+     *
+     * @param localConfiguration configuración local
+     * @param cache              cache para guardar datos de forma temporal
+     * @return OkHttpClient creado para llamadas REST a backend
+     * @see ApiInterceptor
+     * @see ApiAuthenticator
+     */
+    @Provides
+    @Named("httpClientOAuth2")
+    @Singleton
+    public OkHttpClient provideHttpClientOAuth2(
+            JsonObject localConfiguration,
+            Cache cache
+    ) {
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        return new OkHttpClient.Builder()
+                .cache(cache)
+                .connectTimeout(localConfiguration.getAsJsonObject(OAUTH2).getAsJsonPrimitive(CONNECT_TIMEOUT).getAsInt(), TimeUnit.SECONDS)
+                .readTimeout(localConfiguration.getAsJsonObject(OAUTH2).getAsJsonPrimitive(READ_TIMEOUT).getAsInt(), TimeUnit.SECONDS)
+                .writeTimeout(localConfiguration.getAsJsonObject(OAUTH2).getAsJsonPrimitive(WRITE_TIMEOUT).getAsInt(), TimeUnit.SECONDS)
+                .addInterceptor(httpLoggingInterceptor)
+                .build();
+    }
+
+    /**
      * Crea la instancia de Retrofit necesaria para crear los objetos que pueden realizar llamadas
      * a backend a partir de la interface Api enviada como clase a la instancia
      * <code>
@@ -95,9 +125,10 @@ public class NetworkModule {
      * @return instancia Retrofit para creación de instancias de interfaces Api
      */
     @Provides
+    @Named("retrofit")
     @Singleton
     public Retrofit provideRetrofit(
-            OkHttpClient okHttpClient,
+            @Named("httpClient") OkHttpClient okHttpClient,
             JsonObject localConfiguration,
             Gson gson
     ) {
@@ -109,5 +140,32 @@ public class NetworkModule {
                 .build();
     }
 
+    /**
+     * Crea la instancia de Retrofit necesaria para crear los objetos que pueden realizar llamadas
+     * a backend a partir de la interface Api enviada como clase a la instancia
+     * <code>
+     * retrofit.create(ApiClass.class)
+     * </code>
+     *
+     * @param okHttpClient       instancia de OkHttpCliente que sirve para hacer la llamada
+     * @param localConfiguration configuración local
+     * @param gson               parser de respuestas de backend
+     * @return instancia Retrofit para creación de instancias de interfaces Api
+     */
+    @Provides
+    @Named("retrofitOAuth2")
+    @Singleton
+    public Retrofit provideRetrofitOAuth2(
+            @Named("httpClientOAuth2") OkHttpClient okHttpClient,
+            JsonObject localConfiguration,
+            Gson gson
+    ) {
+        return new Retrofit.Builder()
+                .baseUrl(localConfiguration.getAsJsonObject(OAUTH2).getAsJsonPrimitive(BASE_URL).getAsString())
+                .client(okHttpClient)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+    }
 
 }

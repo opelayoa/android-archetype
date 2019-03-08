@@ -7,6 +7,7 @@ import mx.com.pelayo.modules.ApplicationModule;
 import mx.com.pelayo.modules.api.ApiModule;
 import mx.com.pelayo.modules.database.DatabaseModule;
 import mx.com.pelayo.modules.network.NetworkModule;
+import mx.com.pelayo.ui.LoginActivity;
 
 @Singleton
 @Component(modules = {ApplicationModule.class
@@ -14,5 +15,5 @@ import mx.com.pelayo.modules.network.NetworkModule;
         , NetworkModule.class
         , ApiModule.class})
 public interface ApplicationComponent {
-    void inject(MainActivity mainActivity);
+    void inject(LoginActivity loginActivity);
 }

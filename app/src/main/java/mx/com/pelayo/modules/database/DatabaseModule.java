@@ -34,6 +34,7 @@ import mx.com.pelayo.database.dao.TipoSucursalDao;
 import mx.com.pelayo.database.dao.TipotdDao;
 import mx.com.pelayo.database.dao.UsuarioDao;
 import mx.com.pelayo.database.dao.ZonaDao;
+import mx.com.pelayo.database.dao.security.SessionDao;
 
 @Module
 public class DatabaseModule {
@@ -211,6 +212,12 @@ public class DatabaseModule {
     @Singleton
     public ZonaDao provideZonaDao(RoomDatabase roomDatabase) {
         return roomDatabase.zonaDao();
+    }
+
+    @Provides
+    @Singleton
+    public SessionDao provideSessionDao(RoomDatabase roomDatabase) {
+        return roomDatabase.sessionDao();
     }
 
 }
