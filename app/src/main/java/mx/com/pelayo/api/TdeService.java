@@ -3,6 +3,7 @@ package mx.com.pelayo.api;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import mx.com.pelayo.database.entities.Categoria;
 import mx.com.pelayo.database.entities.Departamento;
 import mx.com.pelayo.database.entities.DeptoSintomaDiagnostico;
@@ -10,6 +11,8 @@ import mx.com.pelayo.database.entities.DeptoTipoSintoma;
 import mx.com.pelayo.database.entities.Diagnostico;
 import mx.com.pelayo.database.entities.Distrito;
 import mx.com.pelayo.database.entities.Estado;
+import mx.com.pelayo.database.entities.Icon;
+import mx.com.pelayo.database.entities.IconEntity;
 import mx.com.pelayo.database.entities.ImpCatMotivo;
 import mx.com.pelayo.database.entities.Perfil;
 import mx.com.pelayo.database.entities.PerfilSintomaDiagnostico;
@@ -114,4 +117,10 @@ public interface TdeService {
 
     @GET("departamento-sintoma-diagnostico")
     Observable<List<DeptoSintomaDiagnostico>> getAllDepartamentoSintomaDiagnostico();
+
+    @GET("icons")
+    Observable<List<Icon>> getAllIcons();
+
+    @GET("icon-entity")
+    Observable<List<IconEntity>> getAllIconEntities();
 }

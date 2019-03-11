@@ -12,6 +12,8 @@ import mx.com.pelayo.database.dao.DepartamentoTipoSintomaDao;
 import mx.com.pelayo.database.dao.DiagnosticoDao;
 import mx.com.pelayo.database.dao.DistritoDao;
 import mx.com.pelayo.database.dao.EstadoDao;
+import mx.com.pelayo.database.dao.IconDao;
+import mx.com.pelayo.database.dao.IconEntityDao;
 import mx.com.pelayo.database.dao.ImpCatMotivoDao;
 import mx.com.pelayo.database.dao.PerfilDao;
 import mx.com.pelayo.database.dao.PerfilSintomaDiagnosticoDao;
@@ -33,6 +35,7 @@ import mx.com.pelayo.database.dao.TipotdDao;
 import mx.com.pelayo.database.dao.UsuarioDao;
 import mx.com.pelayo.database.dao.ZonaDao;
 import mx.com.pelayo.database.dao.security.SessionDao;
+import mx.com.pelayo.database.dao.security.UsuarioActualDao;
 import mx.com.pelayo.database.entities.Categoria;
 import mx.com.pelayo.database.entities.Departamento;
 import mx.com.pelayo.database.entities.DeptoSintomaDiagnostico;
@@ -40,6 +43,8 @@ import mx.com.pelayo.database.entities.DeptoTipoSintoma;
 import mx.com.pelayo.database.entities.Diagnostico;
 import mx.com.pelayo.database.entities.Distrito;
 import mx.com.pelayo.database.entities.Estado;
+import mx.com.pelayo.database.entities.Icon;
+import mx.com.pelayo.database.entities.IconEntity;
 import mx.com.pelayo.database.entities.ImpCatMotivo;
 import mx.com.pelayo.database.entities.Perfil;
 import mx.com.pelayo.database.entities.PerfilSintomaDiagnostico;
@@ -61,6 +66,7 @@ import mx.com.pelayo.database.entities.Tipotd;
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.Zona;
 import mx.com.pelayo.database.entities.security.Session;
+import mx.com.pelayo.database.entities.security.UsuarioActual;
 
 @Database(entities = {
         // Acceso.class,
@@ -71,6 +77,8 @@ import mx.com.pelayo.database.entities.security.Session;
         Diagnostico.class,
         Distrito.class,
         Estado.class,
+        Icon.class,
+        IconEntity.class,
         ImpCatMotivo.class,
         Perfil.class,
         PerfilSintomaDiagnostico.class,
@@ -92,7 +100,8 @@ import mx.com.pelayo.database.entities.security.Session;
         Usuario.class,
         Zona.class,
         // Security
-        Session.class
+        Session.class,
+        UsuarioActual.class
 }
         , exportSchema = false
         , version = 1)
@@ -128,6 +137,10 @@ public abstract class RoomDatabase extends android.arch.persistence.room.RoomDat
     public abstract DistritoDao distritoDao();
 
     public abstract EstadoDao estadoDao();
+
+    public abstract IconDao iconDao();
+
+    public abstract IconEntityDao iconEntityDao();
 
     public abstract ImpCatMotivoDao impCatMotivoDao();
 
@@ -171,4 +184,8 @@ public abstract class RoomDatabase extends android.arch.persistence.room.RoomDat
 
     // Security
     public abstract ZonaDao zonaDao();
+
+    public abstract UsuarioActualDao usuarioActualDao();
+
+
 }

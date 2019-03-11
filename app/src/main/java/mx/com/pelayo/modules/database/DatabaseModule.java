@@ -14,6 +14,8 @@ import mx.com.pelayo.database.dao.DepartamentoTipoSintomaDao;
 import mx.com.pelayo.database.dao.DiagnosticoDao;
 import mx.com.pelayo.database.dao.DistritoDao;
 import mx.com.pelayo.database.dao.EstadoDao;
+import mx.com.pelayo.database.dao.IconDao;
+import mx.com.pelayo.database.dao.IconEntityDao;
 import mx.com.pelayo.database.dao.ImpCatMotivoDao;
 import mx.com.pelayo.database.dao.PerfilDao;
 import mx.com.pelayo.database.dao.PerfilSintomaDiagnosticoDao;
@@ -35,6 +37,7 @@ import mx.com.pelayo.database.dao.TipotdDao;
 import mx.com.pelayo.database.dao.UsuarioDao;
 import mx.com.pelayo.database.dao.ZonaDao;
 import mx.com.pelayo.database.dao.security.SessionDao;
+import mx.com.pelayo.database.dao.security.UsuarioActualDao;
 
 @Module
 public class DatabaseModule {
@@ -92,6 +95,18 @@ public class DatabaseModule {
     @Singleton
     public EstadoDao provideEstadoDao(RoomDatabase roomDatabase) {
         return roomDatabase.estadoDao();
+    }
+
+    @Provides
+    @Singleton
+    public IconDao provideIconDao(RoomDatabase roomDatabase) {
+        return roomDatabase.iconDao();
+    }
+
+    @Provides
+    @Singleton
+    public IconEntityDao provideIconEntityDao(RoomDatabase roomDatabase) {
+        return roomDatabase.iconEntityDao();
     }
 
     @Provides
@@ -218,6 +233,12 @@ public class DatabaseModule {
     @Singleton
     public SessionDao provideSessionDao(RoomDatabase roomDatabase) {
         return roomDatabase.sessionDao();
+    }
+
+    @Provides
+    @Singleton
+    public UsuarioActualDao provideUsuarioActualDao(RoomDatabase roomDatabase) {
+        return roomDatabase.usuarioActualDao();
     }
 
 }

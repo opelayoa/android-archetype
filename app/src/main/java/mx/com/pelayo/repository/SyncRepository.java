@@ -12,6 +12,8 @@ import mx.com.pelayo.database.dao.DepartamentoTipoSintomaDao;
 import mx.com.pelayo.database.dao.DiagnosticoDao;
 import mx.com.pelayo.database.dao.DistritoDao;
 import mx.com.pelayo.database.dao.EstadoDao;
+import mx.com.pelayo.database.dao.IconDao;
+import mx.com.pelayo.database.dao.IconEntityDao;
 import mx.com.pelayo.database.dao.ImpCatMotivoDao;
 import mx.com.pelayo.database.dao.PerfilDao;
 import mx.com.pelayo.database.dao.PerfilSintomaDiagnosticoDao;
@@ -45,6 +47,8 @@ public class SyncRepository {
     private DiagnosticoDao diagnosticoDao;
     private DistritoDao distritoDao;
     private EstadoDao estadoDao;
+    private IconDao iconDao;
+    private IconEntityDao iconEntityDao;
     private ImpCatMotivoDao impCatMotivoDao;
     private PerfilDao perfilDao;
     private PerfilSintomaDiagnosticoDao perfilSintomaDiagnosticoDao;
@@ -69,7 +73,7 @@ public class SyncRepository {
     @Inject
     public SyncRepository(/*AccesoDao accesoDao, */CategoriaDao categoriaDao, DepartamentoDao departamentoDao,
                                                    DepartamentoSintomaDiagnosticoDao departamentoSintomaDiagnosticoDao, DepartamentoTipoSintomaDao departamentoTipoSintomaDao,
-                                                   DiagnosticoDao diagnosticoDao, DistritoDao distritoDao, EstadoDao estadoDao, ImpCatMotivoDao impCatMotivoDao,
+                                                   DiagnosticoDao diagnosticoDao, DistritoDao distritoDao, EstadoDao estadoDao, IconDao iconDao, IconEntityDao iconEntityDao, ImpCatMotivoDao impCatMotivoDao,
                                                    PerfilDao perfilDao, PerfilSintomaDiagnosticoDao perfilSintomaDiagnosticoDao, PerfilTipoSintomaDao perfilTipoSintomaDao,
                                                    PosibleOrigenDao posibleOrigenDao, ProveedorDao proveedorDao, PuestosDao puestosDao, RegionDao regionDao, SatUsuarioDao satUsuarioDao,
                                                    SintomaDao sintomaDao, SintomaDiagnosticoDao sintomaDiagnosticoDao, SolucionesStandardDao solucionesStandardDao, StatusProyectosDao statusProyectosDao,
@@ -83,6 +87,8 @@ public class SyncRepository {
         this.diagnosticoDao = diagnosticoDao;
         this.distritoDao = distritoDao;
         this.estadoDao = estadoDao;
+        this.iconDao = iconDao;
+        this.iconEntityDao = iconEntityDao;
         this.impCatMotivoDao = impCatMotivoDao;
         this.perfilDao = perfilDao;
         this.perfilSintomaDiagnosticoDao = perfilSintomaDiagnosticoDao;
@@ -166,6 +172,10 @@ public class SyncRepository {
                 .map(departamentoTipoSintomaList -> departamentoTipoSintomaDao.insertAll(departamentoTipoSintomaList))
                 .flatMap(data -> tdeService.getAllDepartamentoSintomaDiagnostico())
                 .map(departamentoSintomaDiagnosticoList -> departamentoSintomaDiagnosticoDao.insertAll(departamentoSintomaDiagnosticoList))
+                .flatMap(data -> tdeService.getAllIcons())
+                .map(icons -> iconDao.insertAll(icons))
+                .flatMap(data -> tdeService.getAllIconEntities())
+                .map(iconEntities -> iconEntityDao.insertAll(iconEntities))
                 ;
 
     }

@@ -58,7 +58,7 @@ public class NetworkModule {
      * @param localConfiguration configuración local
      * @param cache              cache para guardar datos de forma temporal
      * @param authInterceptor    Interceptor que ayuda a poner el AuthToken sin necesidad de tocar la llamada
-     * @param authenticator      PulpomaticAuthenticator que ayuda a resolver llamadas con respuesta de error (400, 401, 402, etc...)
+     * @param authenticator      Authenticator que ayuda a resolver llamadas con respuesta de error (400, 401, 402, etc...)
      * @return OkHttpClient creado para llamadas REST a backend
      * @see ApiInterceptor
      * @see ApiAuthenticator

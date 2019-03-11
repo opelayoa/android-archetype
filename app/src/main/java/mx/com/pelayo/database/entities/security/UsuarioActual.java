@@ -1,4 +1,4 @@
-package mx.com.pelayo.database.entities;
+package mx.com.pelayo.database.entities.security;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
@@ -6,10 +6,8 @@ import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
-
-@Entity(tableName = "usuario")
-public class Usuario implements java.io.Serializable {
+@Entity(tableName = "usuario_actual")
+public class UsuarioActual implements java.io.Serializable {
 
     @PrimaryKey
     @ColumnInfo(name = "id")
@@ -51,15 +49,9 @@ public class Usuario implements java.io.Serializable {
     @ColumnInfo(name = "user_create")
     @SerializedName("user-create")
     private Integer userCreate;
-    @ColumnInfo(name = "date_create")
-    @SerializedName("date-create")
-    private Date dateCreate;
     @ColumnInfo(name = "user_modify")
     @SerializedName("user-modify")
     private Integer userModify;
-    @ColumnInfo(name = "date_modify")
-    @SerializedName("date-modify")
-    private Date dateModify;
     @ColumnInfo(name = "user_id")
     @SerializedName("user-id")
     private int userId;
@@ -73,7 +65,7 @@ public class Usuario implements java.io.Serializable {
     @SerializedName("puesto-id")
     private Integer puestoId;
 
-    public Usuario() {
+    public UsuarioActual() {
     }
 
     public int getId() {
@@ -180,28 +172,12 @@ public class Usuario implements java.io.Serializable {
         this.userCreate = userCreate;
     }
 
-    public Date getDateCreate() {
-        return this.dateCreate;
-    }
-
-    public void setDateCreate(Date dateCreate) {
-        this.dateCreate = dateCreate;
-    }
-
     public Integer getUserModify() {
         return this.userModify;
     }
 
     public void setUserModify(Integer userModify) {
         this.userModify = userModify;
-    }
-
-    public Date getDateModify() {
-        return this.dateModify;
-    }
-
-    public void setDateModify(Date dateModify) {
-        this.dateModify = dateModify;
     }
 
     public int getUserId() {
