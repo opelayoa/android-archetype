@@ -11,7 +11,7 @@ import javax.inject.Singleton;
 import io.reactivex.Observable;
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.composed.UsuarioActualComposed;
-import mx.com.pelayo.database.entities.security.UsuarioActual;
+import mx.com.pelayo.database.entities.security.Sync;
 import mx.com.pelayo.repository.SecurityRepository;
 
 @Singleton
@@ -26,11 +26,11 @@ public class SecurityViewModel extends ViewModel {
         this.securityRepository = securityRepository;
     }
 
-    public Observable login(String username, String password, String basic) {
+    public Observable<Sync> login(String username, String password, String basic) {
         return securityRepository.login(username, password, basic);
     }
 
-    public LiveData<UsuarioActualComposed> getUsuarioActual(){
+    public LiveData<UsuarioActualComposed> getUsuarioActual() {
         return securityRepository.getUsuarioActual();
     }
 

@@ -2,11 +2,12 @@ package mx.com.pelayo.database.entities;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-@Entity(tableName = "icon_entity")
+@Entity(tableName = "icon_entity", indices = {@Index(value = {"icon_name", "entity_type"})})
 public class IconEntity implements java.io.Serializable {
 
     @PrimaryKey
@@ -34,7 +35,6 @@ public class IconEntity implements java.io.Serializable {
         this.entityId = entityId;
     }
 
-
     public int getId() {
         return id;
     }
@@ -42,7 +42,6 @@ public class IconEntity implements java.io.Serializable {
     public void setId(int id) {
         this.id = id;
     }
-
 
     public String getIconName() {
         return iconName;
@@ -52,7 +51,6 @@ public class IconEntity implements java.io.Serializable {
         this.iconName = iconName;
     }
 
-
     public String getEntityType() {
         return entityType;
     }
@@ -60,7 +58,6 @@ public class IconEntity implements java.io.Serializable {
     public void setEntityType(String entityType) {
         this.entityType = entityType;
     }
-
 
     public int getEntityId() {
         return entityId;

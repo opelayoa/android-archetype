@@ -17,6 +17,12 @@ public interface SintomaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertAll(List<Sintoma> sintomas);
 
-    @Query("select id as id, nombre as descripcion, '\ue90d' as icon from sintoma where id in (select distinct sintoma_id  from tipo_sintoma where tipo_id = :tipoId and id in (select distinct ts_id from perfil_tipo_sintoma where perfil_id = :perfilId)) order by nombre")
+    @Query("select sintoma.id as id, sintoma.nombre as descripcion, icon.unicode as icon \n" +
+            "from sintoma \n" +
+            "left join icon_entity on icon_entity.entity_id = sintoma.id and icon_entity.entity_type = 'symptom'\n" +
+            "left join icon on icon.nombre = icon_entity.icon_name\n" +
+            "where sintoma.id in (select distinct sintoma_id  from tipo_sintoma where tipo_id = :tipoId and id in (select distinct ts_id from perfil_tipo_sintoma where perfil_id = :perfilId and status = 1) and status = 1) \n" +
+            "and sintoma.status = 'Activo' \n" +
+            "order by sintoma.nombre")
     LiveData<List<ItemGrid>> getAllGridByPerfil(Integer tipoId, Integer perfilId);
 }

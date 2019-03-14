@@ -18,14 +18,14 @@ public interface TipotdDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertAll(List<Tipotd> tipotds);
 
-    @Query("select tipotd.id, tipotd.nombre as descripcion, icon.unicode as icon from tipotd , icon, icon_entity \n" +
+    @Query("select tipotd.id, tipotd.nombre as descripcion, icon.unicode as icon \n" +
+            "from tipotd\n" +
+            "left join icon_entity on icon_entity.entity_id = tipotd.id and icon_entity.entity_type = 'type'\n" +
+            "left join icon on icon.nombre = icon_entity.icon_name\n" +
             "where tipotd.id in (\n" +
-            "   select distinct tipo_id from tipo_sintoma where id in (\n" +
-            "       select distinct ts_id from perfil_tipo_sintoma where perfil_id = :perfilId)\n" +
-            "\t) \n" +
-            "and icon_entity.entity_type = 'type' \n" +
-            "and icon_entity.entity_id = tipotd.id\n" +
-            "and icon_entity.icon_name = icon.nombre\n" +
-            "order by tipotd.nombre")
+            "\tselect distinct tipo_id from tipo_sintoma where id in (\n" +
+            "\t\tselect distinct ts_id from perfil_tipo_sintoma where perfil_id = :perfilId and status = 1))\n" +
+            "and status = 1\n" +
+            "order by descripcion")
     LiveData<List<ItemGrid>> getAllGridByPerfil(Integer perfilId);
 }

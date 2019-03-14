@@ -35,6 +35,7 @@ import mx.com.pelayo.database.dao.TipotdDao;
 import mx.com.pelayo.database.dao.UsuarioDao;
 import mx.com.pelayo.database.dao.ZonaDao;
 import mx.com.pelayo.database.dao.security.SessionDao;
+import mx.com.pelayo.database.dao.security.SyncDao;
 import mx.com.pelayo.database.dao.security.UsuarioActualDao;
 import mx.com.pelayo.database.entities.Categoria;
 import mx.com.pelayo.database.entities.Departamento;
@@ -66,6 +67,7 @@ import mx.com.pelayo.database.entities.Tipotd;
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.Zona;
 import mx.com.pelayo.database.entities.security.Session;
+import mx.com.pelayo.database.entities.security.Sync;
 import mx.com.pelayo.database.entities.security.UsuarioActual;
 
 @Database(entities = {
@@ -101,7 +103,8 @@ import mx.com.pelayo.database.entities.security.UsuarioActual;
         Zona.class,
         // Security
         Session.class,
-        UsuarioActual.class
+        UsuarioActual.class,
+        Sync.class
 }
         , exportSchema = false
         , version = 1)
@@ -187,5 +190,6 @@ public abstract class RoomDatabase extends android.arch.persistence.room.RoomDat
 
     public abstract UsuarioActualDao usuarioActualDao();
 
+    public abstract SyncDao syncDao();
 
 }

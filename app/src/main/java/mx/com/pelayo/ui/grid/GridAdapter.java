@@ -2,7 +2,6 @@ package mx.com.pelayo.ui.grid;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import mx.com.pelayo.R;
 import mx.com.pelayo.database.entities.custom.ItemGrid;
 
 public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
-
 
     List<ItemGrid> itemGrid;
     OnItemClickListener onItemClickListener;
@@ -36,7 +34,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ItemGrid itemGrid = this.itemGrid.get(position);
         holder.descripcion.setText(itemGrid.getDescripcion());
-        holder.icon.setText(Html.fromHtml(itemGrid.getIcon()));
+        holder.icon.setText(itemGrid.getIcon());
     }
 
     @Override
@@ -46,16 +44,21 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
         return 0;
     }
 
+    public void setItemGrid(List<ItemGrid> itemGrid) {
+        this.itemGrid = itemGrid;
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView descripcion;
         public Button icon;
-
 
         public ViewHolder(@NonNull View view) {
             super(view);
             descripcion = view.findViewById(R.id.descripcion);
             icon = view.findViewById(R.id.icon);
-            icon.setOnClickListener(this);
+            icon.setClickable(false);
+            view.setOnClickListener(this);
         }
 
         @Override
@@ -64,10 +67,5 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
                 onItemClickListener.onClick(itemGrid.get(getAdapterPosition()));
             }
         }
-    }
-
-    public void setItemGrid(List<ItemGrid> itemGrid) {
-        this.itemGrid = itemGrid;
-        notifyDataSetChanged();
     }
 }

@@ -11,11 +11,11 @@ import javax.inject.Singleton;
 import io.reactivex.Observable;
 import mx.com.pelayo.api.SecurityService;
 import mx.com.pelayo.database.dao.security.SessionDao;
+import mx.com.pelayo.database.dao.security.SyncDao;
 import mx.com.pelayo.database.dao.security.UsuarioActualDao;
 import mx.com.pelayo.database.entities.Tipotd;
-import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.composed.UsuarioActualComposed;
-import mx.com.pelayo.database.entities.security.UsuarioActual;
+import mx.com.pelayo.database.entities.security.Sync;
 
 @Singleton
 public class SecurityRepository {
@@ -24,19 +24,22 @@ public class SecurityRepository {
     public SecurityService securityService;
     public SessionDao sessionDao;
     public UsuarioActualDao usuarioActualDao;
+    public SyncDao syncDao;
 
     private LiveData<UsuarioActualComposed> usuarioActual;
 
     @Inject
-    public SecurityRepository(Executor executor, SecurityService securityService, SessionDao sessionDao, UsuarioActualDao usuarioActualDao) {
+    public SecurityRepository(Executor executor, SecurityService securityService, SessionDao sessionDao,
+                              UsuarioActualDao usuarioActualDao, SyncDao syncDao) {
         this.executor = executor;
         this.securityService = securityService;
         this.sessionDao = sessionDao;
         this.usuarioActualDao = usuarioActualDao;
+        this.syncDao = syncDao;
         this.usuarioActual = usuarioActualDao.getUserUsuarioActualLiveData();
     }
 
-    public Observable login(String username, String password, String basic) {
+    public Observable<Sync> login(String username, String password, String basic) {
         return this.securityService
                 .login(username, password, "password", basic)
                 .map(session -> {
@@ -46,10 +49,17 @@ public class SecurityRepository {
                 })
                 .flatMap(session -> this.securityService.getInfo("Bearer " + session.getAccessToken()))
                 .map(usuarioActual -> {
-                    LiveData<List<Tipotd>> tipoListLiveData =  usuarioActualDao.getAllByPerfil(18);
-
+                    LiveData<List<Tipotd>> tipoListLiveData = usuarioActualDao.getAllByPerfil(18);
                     usuarioActualDao.deleteAll();
                     return usuarioActualDao.insert(usuarioActual);
+                })
+                .map(data -> {
+                    Sync sync = syncDao.getSyncByUserId(Integer.valueOf(data.toString()));
+                    if (sync == null) {
+                        sync = new Sync();
+                        sync.setStatus(0);
+                    }
+                    return sync;
                 });
 
     }

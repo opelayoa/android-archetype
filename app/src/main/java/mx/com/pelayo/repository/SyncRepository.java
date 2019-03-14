@@ -1,5 +1,7 @@
 package mx.com.pelayo.repository;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -34,6 +36,10 @@ import mx.com.pelayo.database.dao.TipoSucursalDao;
 import mx.com.pelayo.database.dao.TipotdDao;
 import mx.com.pelayo.database.dao.UsuarioDao;
 import mx.com.pelayo.database.dao.ZonaDao;
+import mx.com.pelayo.database.dao.security.SyncDao;
+import mx.com.pelayo.database.dao.security.UsuarioActualDao;
+import mx.com.pelayo.database.entities.composed.UsuarioActualComposed;
+import mx.com.pelayo.database.entities.security.Sync;
 
 @Singleton
 public class SyncRepository {
@@ -69,6 +75,8 @@ public class SyncRepository {
     private TipotdDao tipotdDao;
     private UsuarioDao usuarioDao;
     private ZonaDao zonaDao;
+    private SyncDao syncDao;
+    private UsuarioActualDao usuarioActualDao;
 
     @Inject
     public SyncRepository(/*AccesoDao accesoDao, */CategoriaDao categoriaDao, DepartamentoDao departamentoDao,
@@ -78,7 +86,7 @@ public class SyncRepository {
                                                    PosibleOrigenDao posibleOrigenDao, ProveedorDao proveedorDao, PuestosDao puestosDao, RegionDao regionDao, SatUsuarioDao satUsuarioDao,
                                                    SintomaDao sintomaDao, SintomaDiagnosticoDao sintomaDiagnosticoDao, SolucionesStandardDao solucionesStandardDao, StatusProyectosDao statusProyectosDao,
                                                    SucursalDao sucursalDao, TiendaDao tiendaDao, TipoSintomaDao tipoSintomaDao, TipoSucursalDao tipoSucursalDao, TipotdDao tipotdDao,
-                                                   UsuarioDao usuarioDao, ZonaDao zonaDao, TdeService tdeService) {
+                                                   UsuarioDao usuarioDao, ZonaDao zonaDao, TdeService tdeService, SyncDao syncDao, UsuarioActualDao usuarioActualDao) {
         // this.accesoDao = accesoDao;
         this.categoriaDao = categoriaDao;
         this.departamentoDao = departamentoDao;
@@ -109,6 +117,8 @@ public class SyncRepository {
         this.tipotdDao = tipotdDao;
         this.usuarioDao = usuarioDao;
         this.zonaDao = zonaDao;
+        this.syncDao = syncDao;
+        this.usuarioActualDao = usuarioActualDao;
         this.tdeService = tdeService;
     }
 
@@ -176,6 +186,23 @@ public class SyncRepository {
                 .map(icons -> iconDao.insertAll(icons))
                 .flatMap(data -> tdeService.getAllIconEntities())
                 .map(iconEntities -> iconEntityDao.insertAll(iconEntities))
+                .map(data -> {
+                    syncDao.deleteAll();
+                    UsuarioActualComposed usuarioActualComposed = usuarioActualDao.getUserUsuarioActual();
+                    Sync sync = new Sync();
+                    sync.setDate(new Date());
+                    sync.setStatus(1);
+                    sync.setUserId(usuarioActualComposed.usuarioActual.getId());
+                    long id = syncDao.insert(sync);
+                    return 1;
+                })
+                .onErrorResumeNext(observer -> {
+                    syncDao.deleteAll();
+                    UsuarioActualComposed usuarioActualComposed = usuarioActualDao.getUserUsuarioActual();
+                    Sync sync = new Sync();
+                    sync.setStatus(2);
+                    syncDao.insert(sync);
+                })
                 ;
 
     }

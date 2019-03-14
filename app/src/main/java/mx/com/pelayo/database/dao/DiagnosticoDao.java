@@ -18,11 +18,12 @@ public interface DiagnosticoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertAll(List<Diagnostico> diagnosticos);
 
-    @Query("select id as id, descripcion, '\ue90d' as icon from diagnostico where id in (" +
-            "select distinct diagnostico_id from sintoma_diagnostico where sintoma_id = :sintomaId and id in (" +
-            "select distinct sd_id from perfil_sintoma_diagnostico where perfil_id = :perfilId" +
-            ")" +
-            ")"
-    )
+    @Query("select diagnostico.id as id, diagnostico.descripcion as descripcion, icon.unicode as icon  \n" +
+            "from diagnostico\n" +
+            "left join icon_entity on icon_entity.entity_id = diagnostico.id and icon_entity.entity_type = 'diagnostic'\n" +
+            "left join icon on icon.nombre = icon_entity.icon_name\n" +
+            "where diagnostico.id in (select distinct diagnostico_id  from sintoma_diagnostico where sintoma_id = :sintomaId and id in (select distinct sd_id from perfil_sintoma_diagnostico where perfil_id = :perfilId and status = 1) and status = 1) \n" +
+            "and diagnostico.status = 'Activo' \n" +
+            "order by diagnostico.descripcion")
     LiveData<List<ItemGrid>> getAllGrid(Integer sintomaId, Integer perfilId);
 }
