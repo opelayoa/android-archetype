@@ -7,7 +7,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="12dp">
+        android:padding="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,19 +20,16 @@
                 android:layout_height="wrap_content"
                 android:theme="@style/TextInputLayout.Red">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/applicant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Solicitante"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:textColor="@color/colorPrimary"/>
+                    android:textColor="@color/colorPrimary"
+                    android:drawablePadding="4dp"/>
             </android.support.design.widget.TextInputLayout>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="4dp" />
 
             <android.support.design.widget.TextInputLayout
                 style="@style/TextInputLayout.Red"
@@ -45,6 +42,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Region"
+                    android:enabled="false"
+                    android:focusable="false"
                     android:inputType="text"
                     android:maxLines="1"
                     android:textColor="@color/colorPrimary"/>

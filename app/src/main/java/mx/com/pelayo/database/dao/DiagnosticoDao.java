@@ -25,5 +25,5 @@ public interface DiagnosticoDao {
             "where diagnostico.id in (select distinct diagnostico_id  from sintoma_diagnostico where sintoma_id = :sintomaId and id in (select distinct sd_id from perfil_sintoma_diagnostico where perfil_id = :perfilId and status = 1) and status = 1) \n" +
             "and diagnostico.status = 'Activo' \n" +
             "order by diagnostico.descripcion")
-    LiveData<List<ItemGrid>> getAllGrid(Integer sintomaId, Integer perfilId);
+    List<ItemGrid> getAllGrid(Integer sintomaId, Integer perfilId);
 }

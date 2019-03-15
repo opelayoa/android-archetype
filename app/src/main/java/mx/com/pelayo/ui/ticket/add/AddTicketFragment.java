@@ -5,8 +5,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Toast;
 
 import mx.com.pelayo.R;
+import mx.com.pelayo.ui.MainActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,11 +23,11 @@ public class AddTicketFragment extends Fragment {
     private static final String TYPE_PARAM = "type_id";
     private static final String SYMPTOM_PARAM = "symptom";
     private static final String DIAGNOSTIC_PARAM = "symptom";
-
+    String[] items = {"Oscar Daniel Pelayo", "Luis Manuel Pelayo", "Luis Antonio Anduaga", "Miguel Mejia", "Miguel Angel Gutierrez", "Maria Antonieta Mejia",
+            "Maria Angelica", "Jose Antonio Ponce", "Edgar Gutierrez", "Ruben Ponce"};
     private int typeId;
     private int symptomId;
     private int diagnosticId;
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -36,8 +40,8 @@ public class AddTicketFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param typeId Parameter 1.
-     * @param symptomId Parameter 2.
+     * @param typeId       Parameter 1.
+     * @param symptomId    Parameter 2.
      * @param diagnosticId Parameter 2.
      * @return A new instance of fragment AddTicketFragment.
      */
@@ -66,8 +70,23 @@ public class AddTicketFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_ticket, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_ticket, container, false);
+        AutoCompleteTextView autoCompleteTextView = view.findViewById(R.id.applicant);
+
+        autoCompleteTextView.setAdapter(new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, items));
+
+        autoCompleteTextView.setOnTouchListener((v, event) -> {
+            autoCompleteTextView.showDropDown();
+            return false;
+        });
+
+        autoCompleteTextView.setOnItemClickListener((parent, view1, position, id) -> {
+            String data = (String) parent.getItemAtPosition(position);
+            Toast.makeText(AddTicketFragment.this.getContext(), data, Toast.LENGTH_SHORT).show();
+        });
+
+        return view;
     }
 
 }

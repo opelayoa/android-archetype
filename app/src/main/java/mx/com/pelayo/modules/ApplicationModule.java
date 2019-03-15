@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.inject.Singleton;
@@ -33,8 +33,8 @@ public class ApplicationModule {
 
     @Singleton
     @Provides
-    public Executor provideExecutor() {
-        return Executors.newCachedThreadPool();
+    public ExecutorService provideExecutorService() {
+        return Executors.newSingleThreadExecutor();
     }
 
     /**

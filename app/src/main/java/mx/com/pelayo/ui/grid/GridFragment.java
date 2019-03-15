@@ -2,7 +2,6 @@ package mx.com.pelayo.ui.grid;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -83,20 +82,18 @@ public class GridFragment extends Fragment implements OnItemClickListener {
 
     private void loadItems(UsuarioActualComposed usuarioActualComposed) {
         if (gridType.equalsIgnoreCase(TYPE_TYPE)) {
-            gridViewModel.getAllTiposGrid(usuarioActualComposed.usuarioActual.getPerfilId())
-                    .observe(this, gridItems -> {
-                        gridAdapter.setItemGrid(gridItems);
-                    });
+            gridAdapter.setItemGrid(
+                    gridViewModel.getAllTiposGrid(usuarioActualComposed.usuarioActual.getPerfilId())
+            );
+
         } else if (gridType.equalsIgnoreCase(SYMPTOM_TYPE)) {
-            gridViewModel.getAllSintomasGrid(typeId, usuarioActualComposed.usuarioActual.getPerfilId())
-                    .observe(this, gridItems -> {
-                        gridAdapter.setItemGrid(gridItems);
-                    });
+            gridAdapter.setItemGrid(
+                    gridViewModel.getAllSintomasGrid(typeId, usuarioActualComposed.usuarioActual.getPerfilId())
+            );
         } else if (gridType.equalsIgnoreCase(DIAGNOSTIC_TYPE)) {
-            gridViewModel.getAllDiagnosticosGrid(symptomId, usuarioActualComposed.usuarioActual.getPerfilId())
-                    .observe(this, gridItems -> {
-                        gridAdapter.setItemGrid(gridItems);
-                    });
+            gridAdapter.setItemGrid(
+                    gridViewModel.getAllDiagnosticosGrid(symptomId, usuarioActualComposed.usuarioActual.getPerfilId())
+            );
         }
 
     }
@@ -132,18 +129,20 @@ public class GridFragment extends Fragment implements OnItemClickListener {
     }
 
     private void goTo(String type, Integer typeId, Integer symptomId) {
-        FragmentTransaction  fragmentTransaction = getActivity().getSupportFragmentManager()
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager()
                 .beginTransaction();
         fragmentTransaction
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                 .replace(R.id.content_frame, GridFragment.newInstance(type, typeId, symptomId))
                 .addToBackStack(null)
                 .commit();
     }
 
     private void goToAdd(Integer typeId, Integer symptomId, Integer diagnosticId) {
-        FragmentTransaction  fragmentTransaction = getActivity().getSupportFragmentManager()
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager()
                 .beginTransaction();
         fragmentTransaction
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                 .replace(R.id.content_frame, AddTicketFragment.newInstance(typeId, symptomId, diagnosticId))
                 .addToBackStack(null)
                 .commit();

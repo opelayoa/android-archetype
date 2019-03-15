@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,7 +21,7 @@ import mx.com.pelayo.database.entities.security.Sync;
 @Singleton
 public class SecurityRepository {
 
-    public Executor executor;
+    public ExecutorService executor;
     public SecurityService securityService;
     public SessionDao sessionDao;
     public UsuarioActualDao usuarioActualDao;
@@ -29,7 +30,7 @@ public class SecurityRepository {
     private LiveData<UsuarioActualComposed> usuarioActual;
 
     @Inject
-    public SecurityRepository(Executor executor, SecurityService securityService, SessionDao sessionDao,
+    public SecurityRepository(ExecutorService executor, SecurityService securityService, SessionDao sessionDao,
                               UsuarioActualDao usuarioActualDao, SyncDao syncDao) {
         this.executor = executor;
         this.securityService = securityService;

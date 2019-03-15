@@ -2,11 +2,12 @@ package mx.com.pelayo.database.entities;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-@Entity(tableName = "tipotd")
+@Entity(tableName = "tipotd", indices = {@Index(value = {"id", "status"})})
 public class Tipotd implements java.io.Serializable {
 
     @PrimaryKey

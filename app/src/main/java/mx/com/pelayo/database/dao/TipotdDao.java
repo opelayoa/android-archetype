@@ -1,6 +1,5 @@
 package mx.com.pelayo.database.dao;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -8,7 +7,7 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
-import mx.com.pelayo.database.entities.TipoSucursal;
+import io.reactivex.Single;
 import mx.com.pelayo.database.entities.Tipotd;
 import mx.com.pelayo.database.entities.custom.ItemGrid;
 
@@ -27,5 +26,5 @@ public interface TipotdDao {
             "\t\tselect distinct ts_id from perfil_tipo_sintoma where perfil_id = :perfilId and status = 1))\n" +
             "and status = 1\n" +
             "order by descripcion")
-    LiveData<List<ItemGrid>> getAllGridByPerfil(Integer perfilId);
+    List<ItemGrid> getAllGridByPerfil(Integer perfilId);
 }

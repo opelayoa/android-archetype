@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,13 +21,13 @@ public class UsuarioRepository {
 
     private LiveData<List<Usuario>> usuarios;
 
-    public Executor executor;
+    public ExecutorService executor;
     public UsuarioDao usuarioDao;
     public DistritoDao distritoDao;
     public TdeService tdeService;
 
     @Inject
-    public UsuarioRepository(Executor executor, UsuarioDao usuarioDao, DistritoDao distritoDao, TdeService tdeService) {
+    public UsuarioRepository(ExecutorService executor, UsuarioDao usuarioDao, DistritoDao distritoDao, TdeService tdeService) {
         this.executor = executor;
         this.usuarioDao = usuarioDao;
         this.distritoDao = distritoDao;

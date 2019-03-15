@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ public class HomeFragment extends Fragment {
     private void goToAdd(View view) {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
+                //.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.content_frame, GridFragment.newInstance("type", null, null))
                 .addToBackStack(null)
                 .commit();
