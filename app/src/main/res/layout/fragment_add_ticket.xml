@@ -24,11 +24,11 @@
                     android:id="@+id/applicant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawablePadding="4dp"
                     android:hint="Solicitante"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:textColor="@color/colorPrimary"
-                    android:drawablePadding="4dp"/>
+                    android:textColor="@color/colorPrimary" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -37,18 +37,42 @@
                 android:layout_height="wrap_content"
                 android:theme="@style/TextInputLayout.Red">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/region"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Region"
-                    android:enabled="false"
-                    android:focusable="false"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:textColor="@color/colorPrimary"/>
+                    android:textColor="@color/colorPrimary" />
             </android.support.design.widget.TextInputLayout>
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioGroup
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/optStore"
+                        style="@style/RadioButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tienda" />
+
+                    <RadioButton
+                        android:id="@+id/optOther"
+                        style="@style/RadioButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Almacen/Otro" />
+                </RadioGroup>
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

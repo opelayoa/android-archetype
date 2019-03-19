@@ -9,8 +9,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
+import mx.com.pelayo.App;
 import mx.com.pelayo.R;
-import mx.com.pelayo.ui.MainActivity;
+import mx.com.pelayo.database.entities.custom.ItemAutocomplete;
+import mx.com.pelayo.repository.TicketAddRepository;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,12 +23,17 @@ import mx.com.pelayo.ui.MainActivity;
  */
 public class AddTicketFragment extends Fragment {
 
+    @Inject
+    TicketAddRepository ticketAddRepository;
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String TYPE_PARAM = "type_id";
     private static final String SYMPTOM_PARAM = "symptom";
     private static final String DIAGNOSTIC_PARAM = "symptom";
-    String[] items = {"Oscar Daniel Pelayo", "Luis Manuel Pelayo", "Luis Antonio Anduaga", "Miguel Mejia", "Miguel Angel Gutierrez", "Maria Antonieta Mejia",
-            "Maria Angelica", "Jose Antonio Ponce", "Edgar Gutierrez", "Ruben Ponce"};
+
+    private AutoCompleteTextView applicant;
+    private AutoCompleteTextView region;
+
     private int typeId;
     private int symptomId;
     private int diagnosticId;
@@ -59,6 +68,9 @@ public class AddTicketFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((App) getActivity().getApplicationContext()).getApplicationComponent().inject(this);
+
+
         if (getArguments() != null) {
             typeId = getArguments().getInt(TYPE_PARAM);
             symptomId = getArguments().getInt(SYMPTOM_PARAM);
@@ -71,22 +83,50 @@ public class AddTicketFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_ticket, container, false);
-        AutoCompleteTextView autoCompleteTextView = view.findViewById(R.id.applicant);
 
-        autoCompleteTextView.setAdapter(new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_dropdown_item_1line, items));
-
-        autoCompleteTextView.setOnTouchListener((v, event) -> {
-            autoCompleteTextView.showDropDown();
-            return false;
-        });
-
-        autoCompleteTextView.setOnItemClickListener((parent, view1, position, id) -> {
-            String data = (String) parent.getItemAtPosition(position);
-            Toast.makeText(AddTicketFragment.this.getContext(), data, Toast.LENGTH_SHORT).show();
-        });
+        configApplicants(view);
+        configRegions(view);
 
         return view;
+    }
+
+    private void configApplicants(View view) {
+        applicant = view.findViewById(R.id.applicant);
+        ArrayAdapter<ItemAutocomplete> applicantAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line);
+
+
+        ticketAddRepository.getAllUsuarios().observe(this, usuarios -> {
+            applicantAdapter.clear();
+            applicantAdapter.addAll(usuarios);
+            applicantAdapter.notifyDataSetChanged();
+
+        });
+
+        applicant.setAdapter(applicantAdapter);
+
+        applicant.setOnItemClickListener((parent, view1, position, id) -> {
+            ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
+            Toast.makeText(AddTicketFragment.this.getContext(), data.toString(), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void configRegions(View view) {
+        region = view.findViewById(R.id.region);
+        ArrayAdapter<ItemAutocomplete> regionAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line);
+
+        ticketAddRepository.getAllRegions().observe(this, regions -> {
+            regionAdapter.clear();
+            regionAdapter.addAll(regions);
+            regionAdapter.notifyDataSetChanged();
+        });
+
+
+        region.setAdapter(regionAdapter);
+
+        region.setOnItemClickListener((parent, view1, position, id) -> {
+            ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
+            Toast.makeText(AddTicketFragment.this.getContext(), data.toString(), Toast.LENGTH_SHORT).show();
+        });
     }
 
 }

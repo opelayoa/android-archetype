@@ -37,6 +37,7 @@ import mx.com.pelayo.database.dao.ZonaDao;
 import mx.com.pelayo.database.dao.security.SessionDao;
 import mx.com.pelayo.database.dao.security.SyncDao;
 import mx.com.pelayo.database.dao.security.UsuarioActualDao;
+import mx.com.pelayo.database.dao.ticket.TicketAddDao;
 import mx.com.pelayo.database.entities.Categoria;
 import mx.com.pelayo.database.entities.Departamento;
 import mx.com.pelayo.database.entities.DeptoSintomaDiagnostico;
@@ -191,5 +192,7 @@ public abstract class RoomDatabase extends android.arch.persistence.room.RoomDat
     public abstract UsuarioActualDao usuarioActualDao();
 
     public abstract SyncDao syncDao();
+
+    public abstract TicketAddDao ticketAddDao();
 
 }

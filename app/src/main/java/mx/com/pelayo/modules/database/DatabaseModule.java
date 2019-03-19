@@ -39,6 +39,7 @@ import mx.com.pelayo.database.dao.ZonaDao;
 import mx.com.pelayo.database.dao.security.SessionDao;
 import mx.com.pelayo.database.dao.security.SyncDao;
 import mx.com.pelayo.database.dao.security.UsuarioActualDao;
+import mx.com.pelayo.database.dao.ticket.TicketAddDao;
 
 @Module
 public class DatabaseModule {
@@ -241,6 +242,13 @@ public class DatabaseModule {
     public SyncDao provideSyncDao(RoomDatabase roomDatabase) {
         return roomDatabase.syncDao();
     }
+
+    @Provides
+    @Singleton
+    public TicketAddDao provideTicketAddDao(RoomDatabase roomDatabase) {
+        return roomDatabase.ticketAddDao();
+    }
+
 
     @Provides
     @Singleton
