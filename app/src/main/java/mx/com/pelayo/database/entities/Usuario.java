@@ -236,4 +236,8 @@ public class Usuario implements java.io.Serializable {
         this.puestoId = puestoId;
     }
 
+    @Override
+    public String toString() {
+        return getApellido() + ", " + getNombre();
+    }
 }

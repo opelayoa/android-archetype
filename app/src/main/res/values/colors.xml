@@ -9,4 +9,5 @@
 
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGrey">#ECECEC</color>
+    <color name="colorDisabled">#7E7E7E</color>
 </resources>

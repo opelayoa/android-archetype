@@ -3,7 +3,7 @@ package mx.com.pelayo.repository;
 import android.arch.lifecycle.LiveData;
 
 import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
@@ -16,7 +16,9 @@ import mx.com.pelayo.database.dao.security.SyncDao;
 import mx.com.pelayo.database.dao.security.UsuarioActualDao;
 import mx.com.pelayo.database.entities.Tipotd;
 import mx.com.pelayo.database.entities.composed.UsuarioActualComposed;
+import mx.com.pelayo.database.entities.custom.UsuarioInfo;
 import mx.com.pelayo.database.entities.security.Sync;
+import mx.com.pelayo.database.entities.security.UsuarioActual;
 
 @Singleton
 public class SecurityRepository {
@@ -37,7 +39,7 @@ public class SecurityRepository {
         this.sessionDao = sessionDao;
         this.usuarioActualDao = usuarioActualDao;
         this.syncDao = syncDao;
-        this.usuarioActual = usuarioActualDao.getUserUsuarioActualLiveData();
+        this.usuarioActual = usuarioActualDao.getUsuarioActualLiveData();
     }
 
     public Observable<Sync> login(String username, String password, String basic) {
@@ -68,4 +70,25 @@ public class SecurityRepository {
     public LiveData<UsuarioActualComposed> getUsuarioActual() {
         return usuarioActual;
     }
+
+    public UsuarioActual getUsuarioActualSynchronous() {
+        try {
+            return executor.submit(() -> usuarioActualDao.getUsuarioActual()).get();
+        } catch (ExecutionException e) {
+            return null;
+        } catch (InterruptedException e) {
+            return null;
+        }
+    }
+
+    public UsuarioInfo getUsuarioInfo() {
+        try {
+            return executor.submit(() -> usuarioActualDao.getUsuarioInfo()).get();
+        } catch (ExecutionException e) {
+            return null;
+        } catch (InterruptedException e) {
+            return null;
+        }
+    }
+
 }

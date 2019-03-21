@@ -40,6 +40,7 @@ import mx.com.pelayo.database.dao.security.SyncDao;
 import mx.com.pelayo.database.dao.security.UsuarioActualDao;
 import mx.com.pelayo.database.entities.composed.UsuarioActualComposed;
 import mx.com.pelayo.database.entities.security.Sync;
+import mx.com.pelayo.database.entities.security.UsuarioActual;
 
 @Singleton
 public class SyncRepository {
@@ -188,17 +189,16 @@ public class SyncRepository {
                 .map(iconEntities -> iconEntityDao.insertAll(iconEntities))
                 .map(data -> {
                     syncDao.deleteAll();
-                    UsuarioActualComposed usuarioActualComposed = usuarioActualDao.getUserUsuarioActual();
+                    UsuarioActual usuarioActual = usuarioActualDao.getUsuarioActual();
                     Sync sync = new Sync();
                     sync.setDate(new Date());
                     sync.setStatus(1);
-                    sync.setUserId(usuarioActualComposed.usuarioActual.getId());
+                    sync.setUserId(usuarioActual.getId());
                     long id = syncDao.insert(sync);
                     return 1;
                 })
                 .onErrorResumeNext(observer -> {
                     syncDao.deleteAll();
-                    UsuarioActualComposed usuarioActualComposed = usuarioActualDao.getUserUsuarioActual();
                     Sync sync = new Sync();
                     sync.setStatus(2);
                     syncDao.insert(sync);

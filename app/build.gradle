@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "mx.com.tiendas3b.android_archetypo"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -19,6 +19,8 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    productFlavors {
     }
 }
 
@@ -52,10 +54,9 @@ dependencies {
     // Gson component
     implementation 'com.google.code.gson:gson:2.8.4'
     // RxJava components
-    implementation "io.reactivex.rxjava2:rxjava:2.2.7"
-    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
-
     // Google Support Components
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
@@ -65,4 +66,5 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:support-vector-drawable:28.0.0'
     implementation 'com.android.support:customtabs:28.0.0'
+    implementation 'com.google.guava:guava:27.1-android'
 }

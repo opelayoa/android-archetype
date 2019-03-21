@@ -1,13 +1,14 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="mx.com.pelayo.ui.ticket.add.AddTicketFragment">
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:isScrollContainer="true"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,14 +22,14 @@
                 android:theme="@style/TextInputLayout.Red">
 
                 <AutoCompleteTextView
-                    android:id="@+id/applicant"
+                    android:id="@+id/region"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="4dp"
-                    android:hint="Solicitante"
+                    android:completionThreshold="0"
+                    android:hint="Region"
+                    android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:maxLines="1"
-                    android:textColor="@color/colorPrimary" />
+                    android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -38,43 +39,196 @@
                 android:theme="@style/TextInputLayout.Red">
 
                 <AutoCompleteTextView
-                    android:id="@+id/region"
+                    android:id="@+id/applicant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Region"
+                    android:completionThreshold="0"
+                    android:drawablePadding="4dp"
+                    android:hint="Solicitante"
+                    android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:maxLines="1"
-                    android:textColor="@color/colorPrimary" />
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/optStore"
+                    style="@style/RadioButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+                    android:text="Tienda" />
+
+                <RadioButton
+                    android:id="@+id/optOther"
+                    style="@style/RadioButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Almacen/Otro" />
+            </RadioGroup>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/TextInputLayout.Red"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayout.Red">
+
+                <AutoCompleteTextView
+                    android:id="@+id/expert"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:completionThreshold="0"
+                    android:hint="Técnico"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutTienda"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/TextInputLayout.Red"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextInputLayout.Red">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/district"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:completionThreshold="0"
+                        android:hint="Distrito"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/TextInputLayout.Red"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextInputLayout.Red">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/store"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:completionThreshold="0"
+                        android:hint="Tienda"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutOther"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/TextInputLayout.Red"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextInputLayout.Red">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/department"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:completionThreshold="0"
+                        android:hint="Departamento"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/TextInputLayout.Red"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextInputLayout.Red">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/user"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Usuario"
+                        android:inputType="text"
+                        android:maxLines="1" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/TextInputLayout.Red"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayout.Red">
+
+                <AutoCompleteTextView
+                    android:id="@+id/diagnostic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Diagnóstico"
+                    android:inputType="text"
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/TextInputLayout.Red"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayout.Red">
+
+                <AutoCompleteTextView
+                    android:id="@+id/place"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Lugar"
+                    android:inputType="text"
+                    android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
 
-            <LinearLayout
+            <CheckBox
+                style="@style/RadioButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:text="Aprovado" />
 
-                <RadioGroup
+            <android.support.design.widget.TextInputLayout
+                style="@style/TextInputLayout.Red"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayout.Red">
 
+                <AutoCompleteTextView
+                    android:id="@+id/comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:hint="Lugar"
+                    android:inputType="text"
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
 
-                    <RadioButton
-                        android:id="@+id/optStore"
-                        style="@style/RadioButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tienda" />
+            <TextView
 
-                    <RadioButton
-                        android:id="@+id/optOther"
-                        style="@style/RadioButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Almacen/Otro" />
-                </RadioGroup>
-            </LinearLayout>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nota: el campo observaciones no será editable después de crear el ticket."
+                android:textSize="12sp" />
         </LinearLayout>
 
     </ScrollView>
-
-</FrameLayout>
+</LinearLayout>

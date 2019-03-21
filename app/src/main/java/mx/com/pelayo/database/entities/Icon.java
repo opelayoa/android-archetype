@@ -24,12 +24,6 @@ public class Icon implements java.io.Serializable {
     public Icon() {
     }
 
-    public Icon(int id, String nombre, String unicode) {
-        this.id = id;
-        this.nombre = nombre;
-        this.unicode = unicode;
-    }
-
     public int getId() {
         return this.id;
     }

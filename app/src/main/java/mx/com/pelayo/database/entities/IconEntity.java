@@ -27,14 +27,6 @@ public class IconEntity implements java.io.Serializable {
     public IconEntity() {
     }
 
-    public IconEntity(int id, String iconName, String entityType, int entityId) {
-        super();
-        this.id = id;
-        this.iconName = iconName;
-        this.entityType = entityType;
-        this.entityId = entityId;
-    }
-
     public int getId() {
         return id;
     }
