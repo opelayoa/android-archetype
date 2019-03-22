@@ -51,6 +51,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <RadioGroup
+                android:id="@+id/options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -60,11 +61,10 @@
                     style="@style/RadioButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-
                     android:layout_weight="1"
                     android:text="Tienda" />
 
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
                     android:id="@+id/optOther"
                     style="@style/RadioButton"
                     android:layout_width="0dp"
@@ -91,7 +91,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
-                android:id="@+id/layoutTienda"
+                android:id="@+id/layoutStore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -164,7 +164,9 @@
                         android:id="@+id/user"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:completionThreshold="0"
                         android:hint="Usuario"
+                        android:imeOptions="actionNext"
                         android:inputType="text"
                         android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
@@ -202,10 +204,11 @@
 
 
             <CheckBox
+                android:id="@+id/approved"
                 style="@style/RadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Aprovado" />
+                android:text="Aprobado" />
 
             <android.support.design.widget.TextInputLayout
                 style="@style/TextInputLayout.Red"
@@ -217,17 +220,17 @@
                     android:id="@+id/comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Lugar"
+                    android:hint="Observaciones"
                     android:inputType="text"
                     android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Nota: el campo observaciones no será editable después de crear el ticket."
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textColor="@color/colorDisabled"/>
         </LinearLayout>
 
     </ScrollView>

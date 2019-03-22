@@ -8,7 +8,6 @@ import android.arch.lifecycle.ViewModel;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.custom.ItemAutocomplete;
@@ -17,7 +16,6 @@ import mx.com.pelayo.database.entities.security.UsuarioActual;
 import mx.com.pelayo.repository.SecurityRepository;
 import mx.com.pelayo.repository.TicketAddRepository;
 
-@Singleton
 public class AddTicketViewModel extends ViewModel {
 
     private TicketAddRepository ticketAddRepository;
@@ -29,11 +27,17 @@ public class AddTicketViewModel extends ViewModel {
     private LiveData<List<ItemAutocomplete>> districts;
     private LiveData<List<ItemAutocomplete>> stores;
     private LiveData<List<ItemAutocomplete>> departments;
+    private LiveData<List<ItemAutocomplete>> usersDepartment;
+
+    private LiveData<ItemAutocomplete> diagnostic;
 
     private MutableLiveData<Integer> filterRegion = new MutableLiveData<>();
-
-    private MutableLiveData<Integer> filterDisctrict = new MutableLiveData<>();
+    private MutableLiveData<Integer> filterDistrict = new MutableLiveData<>();
+    private MutableLiveData<Integer> filterDepartment = new MutableLiveData<>();
     private MutableLiveData<ExpertParams> expertParams = new MutableLiveData<>();
+    private MutableLiveData<Integer> filterDiagnostic = new MutableLiveData<>();
+
+    private LiveData<RegionStates> regionStates;
 
     @Inject
     public AddTicketViewModel(TicketAddRepository ticketAddRepository, SecurityRepository securityRepository) {
@@ -49,8 +53,21 @@ public class AddTicketViewModel extends ViewModel {
             }
         });
         this.districts = Transformations.switchMap(filterRegion, ticketAddRepository::getAllDistritosByRegion);
-        this.stores = Transformations.switchMap(filterDisctrict, ticketAddRepository::getAllTiendasByDistrito);
+        this.stores = Transformations.switchMap(filterDistrict, ticketAddRepository::getAllTiendasByDistrito);
         this.departments = ticketAddRepository.getAllDepartments();
+        this.usersDepartment = Transformations.switchMap(filterDepartment, ticketAddRepository::getAllUsuariosByDepartment);
+        this.diagnostic = Transformations.switchMap(filterDiagnostic, ticketAddRepository::getDiagnosticById);
+        this.regionStates = Transformations.switchMap(filterRegion, regionId -> {
+            RegionStates regionStates;
+            if (regionId == 0) {
+                regionStates = new RegionStates(false, false, true, false, true);
+            } else {
+                regionStates = new RegionStates(true, true, false, true, false);
+            }
+            MutableLiveData<RegionStates> data = new MutableLiveData<>();
+            data.setValue(regionStates);
+            return data;
+        });
     }
 
     public LiveData<List<ItemAutocomplete>> getStores() {
@@ -77,16 +94,36 @@ public class AddTicketViewModel extends ViewModel {
         return departments;
     }
 
+    public LiveData<List<ItemAutocomplete>> getUsersDepartment() {
+        return usersDepartment;
+    }
+
+    public LiveData<ItemAutocomplete> getDiagnostic() {
+        return diagnostic;
+    }
+
+    public LiveData<RegionStates> getRegionStates() {
+        return regionStates;
+    }
+
     public void setFilterRegion(Integer regionId) {
         this.filterRegion.setValue(regionId);
     }
 
-    public void setFilterDisctrict(Integer distritoId) {
-        this.filterDisctrict.setValue(distritoId);
+    public void setFilterDistrict(Integer distritoId) {
+        this.filterDistrict.setValue(distritoId);
     }
 
     public void setExpertParams(ExpertParams expertParams) {
         this.expertParams.setValue(expertParams);
+    }
+
+    public void setFilterDepartment(Integer departmentId) {
+        this.filterDepartment.setValue(departmentId);
+    }
+
+    public void setFilterDiagnostic(Integer diagnosticId) {
+        this.filterDiagnostic.setValue(diagnosticId);
     }
 
     public UsuarioActual getUsuarioActual() {
@@ -121,6 +158,42 @@ public class AddTicketViewModel extends ViewModel {
 
         public void setRegionId(Integer regionId) {
             this.regionId = regionId;
+        }
+    }
+
+    public static class RegionStates {
+        private boolean optionEnable;
+        private boolean storeChecked;
+        private boolean otherChecked;
+        private boolean storeLayoutVisible;
+        private boolean otherLayoutVisible;
+
+        public RegionStates(boolean optionEnable, boolean storeChecked, boolean otherChecked, boolean storeLayoutVisible, boolean otherLayoutVisible) {
+            this.optionEnable = optionEnable;
+            this.storeChecked = storeChecked;
+            this.otherChecked = otherChecked;
+            this.storeLayoutVisible = storeLayoutVisible;
+            this.otherLayoutVisible = otherLayoutVisible;
+        }
+
+        public boolean isOptionEnable() {
+            return optionEnable;
+        }
+
+        public boolean isStoreChecked() {
+            return storeChecked;
+        }
+
+        public boolean isOtherChecked() {
+            return otherChecked;
+        }
+
+        public boolean isStoreLayoutVisible() {
+            return storeLayoutVisible;
+        }
+
+        public boolean isOtherLayoutVisible() {
+            return otherLayoutVisible;
         }
     }
 }

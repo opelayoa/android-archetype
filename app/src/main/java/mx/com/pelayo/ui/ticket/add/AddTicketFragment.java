@@ -6,6 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.google.common.collect.Iterables;
 
@@ -33,8 +37,19 @@ public class AddTicketFragment extends Fragment {
     private AutoCompleteTextView expert;
     private AutoCompleteTextView district;
     private AutoCompleteTextView store;
+    private AutoCompleteTextView user;
+    private AutoCompleteTextView diagnostic;
+    private AutoCompleteTextView place;
+    private AutoCompleteTextView comment;
+    private CheckBox approved;
+    private RadioGroup options;
+    private RadioButton optionStore;
+    private RadioButton optionOthers;
 
     private AutoCompleteTextView department;
+
+    private LinearLayout layoutOther;
+    private LinearLayout layoutStore;
 
     private int typeId;
     private int symptomId;
@@ -47,6 +62,7 @@ public class AddTicketFragment extends Fragment {
     private Integer storeId;
 
     private Integer departmentId;
+    private Integer userId;
 
     private UsuarioInfo usuarioInfo;
 
@@ -81,12 +97,18 @@ public class AddTicketFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_ticket, container, false);
         this.usuarioInfo = addTicketViewModel.getUsuarioInfo();
-        configApplicants(view);
         configRegions(view);
+        configApplicants(view);
         configExpert(view);
         configDistrict(view);
         configStores(view);
         configDepartments(view);
+        configUsers(view);
+        configDiagnostic(view);
+        configPlace(view);
+        configApproved(view);
+        configComment(view);
+        configRegionStates(view);
         return view;
     }
 
@@ -105,6 +127,21 @@ public class AddTicketFragment extends Fragment {
                 regionId = regions.get(0).getId();
                 region.setText(regions.get(0).getLabel());
             }
+
+            region.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    region.setText("");
+                } else {
+                    ItemAutocomplete itemAutocomplete = Iterables.tryFind(regions, input -> input.getId() == regionId).orNull();
+                    if (itemAutocomplete != null) {
+                        region.setText(itemAutocomplete.getLabel());
+                    } else {
+                        region.setText(getString(R.string.emptyRegions));
+                    }
+
+                }
+            });
+
             addTicketViewModel.setFilterRegion(regionId);
         });
         region.setAdapter(regionAdapter);
@@ -115,40 +152,54 @@ public class AddTicketFragment extends Fragment {
             addTicketViewModel.setExpertParams(new AddTicketViewModel.ExpertParams(departmentId, regionId));
 
         });
+
+        region.setOnClickListener(v -> region.setText(""));
     }
 
     private void configApplicants(View view) {
         applicant = view.findViewById(R.id.applicant);
         CustomArrayAdapter<Usuario> applicantAdapter = new CustomArrayAdapter(getContext(), android.R.layout.simple_dropdown_item_1line);
-        addTicketViewModel.getUsers().observe(this, usuarios -> {
+        addTicketViewModel.getUsers().observe(this, applicants -> {
             applicantAdapter.clear();
-            applicantAdapter.addAll(usuarios);
+            applicantAdapter.addAll(applicants);
             System.out.println(usuarioInfo.getId());
             applicantAdapter.notifyDataSetChanged();
-            Usuario item = Iterables.tryFind(usuarios, input -> {
-                if (input.getId() == usuarioInfo.getId()) {
-                    System.out.println("Si es no ma!!!!!!!!!!!!!!!!");
-                }
-                return input.getId() == usuarioInfo.getId();
-            }).orNull();
+            Usuario item = Iterables.tryFind(applicants, input -> input.getId() == usuarioInfo.getId()).orNull();
             if (item != null) {
                 applicant.setText(item.toString());
                 applicantId = item.getId();
                 departmentId = item.getDepartamentoId();
             } else {
-                applicant.setText(usuarios.get(0).toString());
-                applicantId = usuarios.get(0).getId();
-                departmentId = usuarios.get(0).getDepartamentoId();
+                applicant.setText(applicants.get(0).toString());
+                applicantId = applicants.get(0).getId();
+                departmentId = applicants.get(0).getDepartamentoId();
             }
+            applicant.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    applicant.setText("");
+                } else {
+                    Usuario user = Iterables.tryFind(applicants, input -> input.getId() == applicantId).orNull();
+                    if (user != null) {
+                        applicant.setText(user.toString());
+                    } else {
+                        applicant.setText(getString(R.string.emptyRegions));
+                    }
+
+                }
+            });
+
             addTicketViewModel.setExpertParams(new AddTicketViewModel.ExpertParams(departmentId, regionId));
 
         });
+
         applicant.setAdapter(applicantAdapter);
         applicant.setOnItemClickListener((parent, view1, position, id) -> {
             Usuario data = (Usuario) parent.getItemAtPosition(position);
             this.applicantId = data.getId();
             addTicketViewModel.setExpertParams(new AddTicketViewModel.ExpertParams(data.getDepartamentoId(), regionId));
         });
+
+        applicant.setOnClickListener(v -> applicant.setText(""));
     }
 
     private void configExpert(View view) {
@@ -160,12 +211,29 @@ public class AddTicketFragment extends Fragment {
             expertAdapter.notifyDataSetChanged();
             expert.setText(experts.get(0).getLabel());
             expertId = experts.get(0).getId();
+
+
+            expert.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    expert.setText("");
+                } else {
+                    ItemAutocomplete item = Iterables.tryFind(experts, input -> input.getId() == expertId).orNull();
+                    if (item != null) {
+                        expert.setText(expert.toString());
+                    } else {
+                        expert.setText(getString(R.string.emptyExperts));
+                    }
+
+                }
+            });
         });
         expert.setAdapter(expertAdapter);
         expert.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             expertId = data.getId();
         });
+
+        expert.setOnClickListener(v -> expert.setText(""));
     }
 
     private void configDistrict(View view) {
@@ -177,7 +245,7 @@ public class AddTicketFragment extends Fragment {
             districtAdapter.notifyDataSetChanged();
             district.setText(districts.get(0).getLabel());
             districtId = districts.get(0).getId();
-            this.addTicketViewModel.setFilterDisctrict(districtId);
+            this.addTicketViewModel.setFilterDistrict(districtId);
             district.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
                     district.setText("");
@@ -191,7 +259,7 @@ public class AddTicketFragment extends Fragment {
         district.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             districtId = data.getId();
-            this.addTicketViewModel.setFilterDisctrict(districtId);
+            this.addTicketViewModel.setFilterDistrict(districtId);
         });
         district.setOnClickListener(v -> {
             district.setText("");
@@ -254,13 +322,123 @@ public class AddTicketFragment extends Fragment {
                     department.setText(item.getLabel());
                 }
             });
+            addTicketViewModel.setFilterDepartment(departmentId);
         });
         department.setAdapter(departmentAdapter);
         department.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             departmentId = data.getId();
+            addTicketViewModel.setFilterDepartment(departmentId);
         });
         department.setOnClickListener(v -> department.setText(""));
+    }
+
+    private void configUsers(View view) {
+        user = view.findViewById(R.id.user);
+        CustomArrayAdapter<ItemAutocomplete> userAdapter = new CustomArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line);
+        addTicketViewModel.getUsersDepartment().observe(this, users -> {
+            userAdapter.clear();
+            userAdapter.addAll(users);
+            userAdapter.notifyDataSetChanged();
+            if (users != null && users.size() > 0) {
+                user.setText(users.get(0).getLabel());
+                userId = users.get(0).getId();
+                enableView(user);
+            } else {
+                disableView(user);
+                user.setText(getString(R.string.emptyUsers));
+                userId = null;
+            }
+            user.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    user.setText("");
+                } else {
+                    ItemAutocomplete item = Iterables.tryFind(users, input -> input.getId() == userId).orNull();
+                    user.setText(item.getLabel());
+                }
+            });
+        });
+        user.setAdapter(userAdapter);
+        user.setOnItemClickListener((parent, view1, position, id) -> {
+            ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
+            userId = data.getId();
+        });
+        user.setOnClickListener(v -> user.setText(""));
+    }
+
+    private void configDiagnostic(View view) {
+        diagnostic = view.findViewById(R.id.diagnostic);
+        addTicketViewModel.getDiagnostic().observe(this, diagnosticValue -> {
+            diagnostic.setText(diagnosticValue.getLabel());
+        });
+        addTicketViewModel.setFilterDiagnostic(diagnosticId);
+        disableView(diagnostic);
+    }
+
+    private void configPlace(View view) {
+        place = view.findViewById(R.id.place);
+        place.setText(usuarioInfo.getRegionId() + " - " + usuarioInfo.getRegionDesc());
+        disableView(place);
+    }
+
+    private void configApproved(View view) {
+        approved = view.findViewById(R.id.approved);
+        approved.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                enableView(comment);
+            } else {
+                disableView(comment);
+                comment.setText("");
+            }
+        });
+    }
+
+    private void configComment(View view) {
+        comment = view.findViewById(R.id.comment);
+        if (approved.isChecked()) {
+            comment.setEnabled(true);
+        } else {
+            comment.setEnabled(false);
+        }
+    }
+
+    private void configRegionStates(View view) {
+        options = view.findViewById(R.id.options);
+        optionStore = view.findViewById(R.id.optStore);
+        optionOthers = view.findViewById(R.id.optOther);
+        layoutOther = view.findViewById(R.id.layoutOther);
+        layoutStore = view.findViewById(R.id.layoutStore);
+        layoutStore.setVisibility(View.GONE);
+        layoutOther.setVisibility(View.GONE);
+        addTicketViewModel.getRegionStates().observe(this, regionStates -> {
+            optionOthers.setChecked(regionStates.isOtherChecked());
+            optionStore.setChecked(regionStates.isStoreChecked());
+            if (regionStates.isOptionEnable()) {
+                enableButton(optionOthers);
+                enableButton(optionStore);
+            } else {
+                disableButton(optionOthers);
+                disableButton(optionStore);
+            }
+
+            if (optionStore.isChecked()) {
+                layoutOther.setVisibility(View.GONE);
+                layoutStore.setVisibility(View.VISIBLE);
+            } else {
+                layoutOther.setVisibility(View.VISIBLE);
+                layoutStore.setVisibility(View.GONE);
+            }
+        });
+        optionStore.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                layoutOther.setVisibility(View.GONE);
+                layoutStore.setVisibility(View.VISIBLE);
+            } else {
+                layoutOther.setVisibility(View.VISIBLE);
+                layoutStore.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     private void disableView(View view) {
@@ -274,6 +452,16 @@ public class AddTicketFragment extends Fragment {
         view.setClickable(true);
         view.setFocusableInTouchMode(true);
         view.setFocusable(true);
+    }
+
+    private void enableButton(View view) {
+        view.setEnabled(true);
+        view.setClickable(true);
+    }
+
+    private void disableButton(View view) {
+        view.setEnabled(false);
+        view.setClickable(false);
     }
 
 }

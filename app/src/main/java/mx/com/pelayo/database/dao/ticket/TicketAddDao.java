@@ -32,4 +32,10 @@ public interface TicketAddDao {
 
     @Query("select id, nombre as label from departamento")
     LiveData<List<ItemAutocomplete>> getAllDepartments();
+
+    @Query("select id, apellido || ', ' || nombre as label from usuario where departamento_id = :departmentId order by apellido")
+    LiveData<List<ItemAutocomplete>> getAllUsuariosByDepartment(Integer departmentId);
+
+    @Query("select id, descripcion as label from diagnostico where id = :diagnosticId")
+    LiveData<ItemAutocomplete> getDiagnosticById(Integer diagnosticId);
 }

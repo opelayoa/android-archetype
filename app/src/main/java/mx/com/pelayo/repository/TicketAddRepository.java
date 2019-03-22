@@ -48,4 +48,12 @@ public class TicketAddRepository {
     public LiveData<List<ItemAutocomplete>> getAllDepartments() {
         return ticketAddDao.getAllDepartments();
     }
+
+    public LiveData<List<ItemAutocomplete>> getAllUsuariosByDepartment(Integer departmentId) {
+        return ticketAddDao.getAllUsuariosByDepartment(departmentId);
+    }
+
+    public LiveData<ItemAutocomplete> getDiagnosticById(Integer diagnosticId) {
+        return ticketAddDao.getDiagnosticById(diagnosticId);
+    }
 }

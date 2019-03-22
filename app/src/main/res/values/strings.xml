@@ -6,4 +6,7 @@
 
     <string name="icon">&#xe90d;</string>
     <string name="stores_empty">Sin información de tiendas</string>
+    <string name="emptyUsers">No existen usuarios asignados al Departamento.</string>
+    <string name="emptyRegions">No existe Región</string>
+    <string name="emptyExperts">No hay información de Técnicos</string>
 </resources>
