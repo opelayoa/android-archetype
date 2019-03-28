@@ -1,6 +1,6 @@
 package mx.com.pelayo.database.entities.custom;
 
-public class UsuarioInfo {
+public class UserInformation {
     private Integer id;
     private String apellido;
     private String nombre;

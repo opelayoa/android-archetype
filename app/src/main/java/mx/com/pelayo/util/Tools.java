@@ -3,10 +3,17 @@ package mx.com.pelayo.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.TypedValue;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.oned.Code39Writer;
 
 import mx.com.pelayo.R;
 
@@ -24,6 +31,37 @@ public class Tools {
     public static int dpToPx(Context context, int dp) {
         Resources r = context.getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    public static Bitmap convertToBarcode(String contents) {
+        BitMatrix bitMatrix;
+        try {
+            int width = 1024;
+            int height = 256;
+            bitMatrix = new Code39Writer().encode(contents, BarcodeFormat.CODE_39, width, height);
+            Bitmap bitmap = Bitmap.createBitmap(bitMatrix.getWidth(), bitMatrix.getHeight(), Bitmap.Config.RGB_565);
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                }
+            }
+            return bitmap;
+        } catch (WriterException e) {
+            return null;
+        }
+    }
+
+    public static String addSpacesBetween(String string, int spaces) {
+        String aux = "";
+        if (string == null)
+            return null;
+        for (int i = 0; i < string.length(); i++) {
+            aux += string.charAt(i);
+            for (int j = 0; j < spaces; j++) {
+                aux += " ";
+            }
+        }
+        return aux.trim();
     }
 
 }

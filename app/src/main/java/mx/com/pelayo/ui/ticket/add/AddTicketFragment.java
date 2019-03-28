@@ -1,10 +1,12 @@
 package mx.com.pelayo.ui.ticket.add;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -19,7 +21,7 @@ import mx.com.pelayo.App;
 import mx.com.pelayo.R;
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.custom.ItemAutocomplete;
-import mx.com.pelayo.database.entities.custom.UsuarioInfo;
+import mx.com.pelayo.database.entities.custom.UserInformation;
 import mx.com.pelayo.ui.ticket.add.adapter.CustomArrayAdapter;
 import mx.com.pelayo.viewmodel.AddTicketViewModel;
 
@@ -64,7 +66,7 @@ public class AddTicketFragment extends Fragment {
     private Integer departmentId;
     private Integer userId;
 
-    private UsuarioInfo usuarioInfo;
+    private UserInformation usuarioInfo;
 
     public AddTicketFragment() {
         // Required empty public constructor
@@ -119,7 +121,7 @@ public class AddTicketFragment extends Fragment {
             regionAdapter.clear();
             regionAdapter.addAll(regions);
             regionAdapter.notifyDataSetChanged();
-            ItemAutocomplete item = Iterables.tryFind(regions, input -> input.getId() == usuarioInfo.getRegionId()).orNull();
+            ItemAutocomplete item = Iterables.tryFind(regions, input -> input.getId().equals(usuarioInfo.getRegionId())).orNull();
             if (item != null) {
                 regionId = item.getId();
                 region.setText(item.getLabel());
@@ -127,7 +129,6 @@ public class AddTicketFragment extends Fragment {
                 regionId = regions.get(0).getId();
                 region.setText(regions.get(0).getLabel());
             }
-
             region.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
                     region.setText("");
@@ -138,10 +139,8 @@ public class AddTicketFragment extends Fragment {
                     } else {
                         region.setText(getString(R.string.emptyRegions));
                     }
-
                 }
             });
-
             addTicketViewModel.setFilterRegion(regionId);
         });
         region.setAdapter(regionAdapter);
@@ -150,9 +149,8 @@ public class AddTicketFragment extends Fragment {
             regionId = data.getId();
             addTicketViewModel.setFilterRegion(regionId);
             addTicketViewModel.setExpertParams(new AddTicketViewModel.ExpertParams(departmentId, regionId));
-
+            hideKeyboard();
         });
-
         region.setOnClickListener(v -> region.setText(""));
     }
 
@@ -184,21 +182,18 @@ public class AddTicketFragment extends Fragment {
                     } else {
                         applicant.setText(getString(R.string.emptyRegions));
                     }
-
                 }
             });
-
             addTicketViewModel.setExpertParams(new AddTicketViewModel.ExpertParams(departmentId, regionId));
 
         });
-
         applicant.setAdapter(applicantAdapter);
         applicant.setOnItemClickListener((parent, view1, position, id) -> {
             Usuario data = (Usuario) parent.getItemAtPosition(position);
             this.applicantId = data.getId();
             addTicketViewModel.setExpertParams(new AddTicketViewModel.ExpertParams(data.getDepartamentoId(), regionId));
+            hideKeyboard();
         });
-
         applicant.setOnClickListener(v -> applicant.setText(""));
     }
 
@@ -211,19 +206,16 @@ public class AddTicketFragment extends Fragment {
             expertAdapter.notifyDataSetChanged();
             expert.setText(experts.get(0).getLabel());
             expertId = experts.get(0).getId();
-
-
             expert.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
                     expert.setText("");
                 } else {
                     ItemAutocomplete item = Iterables.tryFind(experts, input -> input.getId() == expertId).orNull();
                     if (item != null) {
-                        expert.setText(expert.toString());
+                        expert.setText(item.toString());
                     } else {
                         expert.setText(getString(R.string.emptyExperts));
                     }
-
                 }
             });
         });
@@ -231,8 +223,8 @@ public class AddTicketFragment extends Fragment {
         expert.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             expertId = data.getId();
+            hideKeyboard();
         });
-
         expert.setOnClickListener(v -> expert.setText(""));
     }
 
@@ -260,6 +252,7 @@ public class AddTicketFragment extends Fragment {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             districtId = data.getId();
             this.addTicketViewModel.setFilterDistrict(districtId);
+            hideKeyboard();
         });
         district.setOnClickListener(v -> {
             district.setText("");
@@ -301,6 +294,7 @@ public class AddTicketFragment extends Fragment {
         store.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             this.storeId = data.getId();
+            hideKeyboard();
         });
         store.setOnClickListener(v -> store.setText(""));
     }
@@ -329,6 +323,7 @@ public class AddTicketFragment extends Fragment {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             departmentId = data.getId();
             addTicketViewModel.setFilterDepartment(departmentId);
+            hideKeyboard();
         });
         department.setOnClickListener(v -> department.setText(""));
     }
@@ -362,6 +357,7 @@ public class AddTicketFragment extends Fragment {
         user.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             userId = data.getId();
+            hideKeyboard();
         });
         user.setOnClickListener(v -> user.setText(""));
     }
@@ -420,7 +416,6 @@ public class AddTicketFragment extends Fragment {
                 disableButton(optionOthers);
                 disableButton(optionStore);
             }
-
             if (optionStore.isChecked()) {
                 layoutOther.setVisibility(View.GONE);
                 layoutStore.setVisibility(View.VISIBLE);
@@ -438,6 +433,7 @@ public class AddTicketFragment extends Fragment {
                 layoutStore.setVisibility(View.GONE);
             }
         });
+
 
     }
 
@@ -462,6 +458,16 @@ public class AddTicketFragment extends Fragment {
     private void disableButton(View view) {
         view.setEnabled(false);
         view.setClickable(false);
+    }
+
+    public void hideKeyboard() {
+        Activity activity = getActivity();
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+        if (view == null) {
+            view = new View(activity);
+        }
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 }

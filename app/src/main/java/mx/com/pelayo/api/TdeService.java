@@ -4,6 +4,8 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import mx.com.pelayo.api.entities.TicketInfo;
+import mx.com.pelayo.api.entities.TicketSummary;
 import mx.com.pelayo.database.entities.Categoria;
 import mx.com.pelayo.database.entities.Departamento;
 import mx.com.pelayo.database.entities.DeptoSintomaDiagnostico;
@@ -34,6 +36,7 @@ import mx.com.pelayo.database.entities.Tipotd;
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.Zona;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 public interface TdeService {
 
@@ -123,4 +126,10 @@ public interface TdeService {
 
     @GET("icon-entity")
     Observable<List<IconEntity>> getAllIconEntities();
+
+    @GET("tickets/info/{ticketId}")
+    Observable<TicketInfo> getTicketInfo(@Path("ticketId") Integer ticketId);
+
+    @GET("tickets/summary/user/{userId}/type/{ticketStateId}")
+    Observable<List<TicketSummary>> getTicketsSummary(@Path("userId") Integer userId, @Path("ticketStateId") Integer ticketStateId);
 }

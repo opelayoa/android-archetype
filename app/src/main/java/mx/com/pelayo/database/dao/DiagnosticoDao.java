@@ -9,7 +9,6 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 import mx.com.pelayo.database.entities.Diagnostico;
-import mx.com.pelayo.database.entities.Distrito;
 import mx.com.pelayo.database.entities.custom.ItemGrid;
 
 @Dao
@@ -25,5 +24,5 @@ public interface DiagnosticoDao {
             "where diagnostico.id in (select distinct diagnostico_id  from sintoma_diagnostico where sintoma_id = :sintomaId and id in (select distinct sd_id from perfil_sintoma_diagnostico where perfil_id = :perfilId and status = 1) and status = 1) \n" +
             "and diagnostico.status = 'Activo' \n" +
             "order by diagnostico.descripcion")
-    List<ItemGrid> getAllGrid(Integer sintomaId, Integer perfilId);
+    LiveData<List<ItemGrid>> getAllGrid(Integer sintomaId, Integer perfilId);
 }

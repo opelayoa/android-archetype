@@ -10,4 +10,6 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGrey">#ECECEC</color>
     <color name="colorDisabled">#D7D7D7</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

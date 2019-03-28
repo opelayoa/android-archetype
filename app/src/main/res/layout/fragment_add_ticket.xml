@@ -1,6 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <ScrollView
@@ -94,6 +96,8 @@
                 android:id="@+id/layoutStore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
                 <android.support.design.widget.TextInputLayout
@@ -135,6 +139,8 @@
                 android:id="@+id/layoutOther"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
                 <android.support.design.widget.TextInputLayout
@@ -229,8 +235,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Nota: el campo observaciones no será editable después de crear el ticket."
-                android:textSize="12sp"
-                android:textColor="@color/colorDisabled"/>
+                android:textColor="@color/colorDisabled"
+                android:textSize="12sp" />
         </LinearLayout>
 
     </ScrollView>

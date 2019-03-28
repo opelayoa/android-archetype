@@ -8,14 +8,15 @@ import android.arch.lifecycle.ViewModel;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.custom.ItemAutocomplete;
-import mx.com.pelayo.database.entities.custom.UsuarioInfo;
-import mx.com.pelayo.database.entities.security.UsuarioActual;
+import mx.com.pelayo.database.entities.custom.UserInformation;
 import mx.com.pelayo.repository.SecurityRepository;
 import mx.com.pelayo.repository.TicketAddRepository;
 
+@Singleton
 public class AddTicketViewModel extends ViewModel {
 
     private TicketAddRepository ticketAddRepository;
@@ -126,11 +127,7 @@ public class AddTicketViewModel extends ViewModel {
         this.filterDiagnostic.setValue(diagnosticId);
     }
 
-    public UsuarioActual getUsuarioActual() {
-        return securityRepository.getUsuarioActualSynchronous();
-    }
-
-    public UsuarioInfo getUsuarioInfo() {
+    public UserInformation getUsuarioInfo() {
         return securityRepository.getUsuarioInfo();
     }
 

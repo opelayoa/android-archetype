@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,11 @@ import javax.inject.Inject;
 
 import mx.com.pelayo.App;
 import mx.com.pelayo.R;
-import mx.com.pelayo.database.entities.composed.UsuarioActualComposed;
 import mx.com.pelayo.database.entities.custom.ItemGrid;
+import mx.com.pelayo.database.entities.custom.UserInformation;
 import mx.com.pelayo.ui.MainActivity;
 import mx.com.pelayo.ui.ticket.add.AddTicketFragment;
+import mx.com.pelayo.ui.ticket.list.ListTicketFragment;
 import mx.com.pelayo.util.Tools;
 import mx.com.pelayo.viewmodel.GridViewModel;
 import mx.com.pelayo.viewmodel.SecurityViewModel;
@@ -25,14 +27,15 @@ import mx.com.pelayo.widget.SpacingItemDecoration;
 
 public class GridFragment extends Fragment implements OnItemClickListener {
 
-    private static final String GRID_TYPE = "grid_type";
-    private static final String TYPE_TYPE = "type";
-    private static final String TYPE_ID = "typeId";
+    public static final String GRID_TYPE = "grid_type";
+    public static final String TYPE_TYPE = "type";
+    public static final String TYPE_ID = "typeId";
 
-    private static final String SYMPTOM_TYPE = "symptom";
-    private static final String SYMPTOM_ID = "symptomId";
+    public static final String SYMPTOM_TYPE = "symptom";
+    public static final String SYMPTOM_ID = "symptomId";
+    public static final String DIAGNOSTIC_TYPE = "diagnostic";
+    public static final String TICKET_STATES_TYPE = "ticket_states";
 
-    private static final String DIAGNOSTIC_TYPE = "diagnostic";
     @Inject
     public SecurityViewModel securityViewModel;
     @Inject
@@ -70,7 +73,7 @@ public class GridFragment extends Fragment implements OnItemClickListener {
             symptomId = getArguments().getInt(SYMPTOM_ID);
         }
         gridAdapter = new GridAdapter(this);
-        securityViewModel.getUsuarioActual().observe(this, usuarioActualComposed -> loadItems(usuarioActualComposed));
+        gridViewModel.getUserInformation().observe(this, this::loadItems);
 
     }
 
@@ -80,20 +83,18 @@ public class GridFragment extends Fragment implements OnItemClickListener {
         ((MainActivity) getActivity()).hideBanner();
     }
 
-    private void loadItems(UsuarioActualComposed usuarioActualComposed) {
+    private void loadItems(UserInformation userInformation) {
         if (gridType.equalsIgnoreCase(TYPE_TYPE)) {
-            gridAdapter.setItemGrid(
-                    gridViewModel.getAllTiposGrid(usuarioActualComposed.usuarioActual.getPerfilId())
-            );
-
+            gridViewModel.getTypes().observe(this, data -> gridAdapter.setItemGrid(data));
+            gridViewModel.setProfileFilter(userInformation.getPerfilId());
         } else if (gridType.equalsIgnoreCase(SYMPTOM_TYPE)) {
-            gridAdapter.setItemGrid(
-                    gridViewModel.getAllSintomasGrid(typeId, usuarioActualComposed.usuarioActual.getPerfilId())
-            );
+            gridViewModel.getSymptoms().observe(this, data -> gridAdapter.setItemGrid(data));
+            gridViewModel.setSymptomFilter(new GridViewModel.SymptomFilter(typeId, userInformation.getPerfilId()));
         } else if (gridType.equalsIgnoreCase(DIAGNOSTIC_TYPE)) {
-            gridAdapter.setItemGrid(
-                    gridViewModel.getAllDiagnosticosGrid(symptomId, usuarioActualComposed.usuarioActual.getPerfilId())
-            );
+            gridViewModel.getDiagnostics().observe(this, data -> gridAdapter.setItemGrid(data));
+            gridViewModel.setDiagnosticFilter(new GridViewModel.DiagnosticFilter(symptomId, userInformation.getPerfilId()));
+        } else if (gridType.equalsIgnoreCase(TICKET_STATES_TYPE)) {
+            gridViewModel.getTicketStates().observe(this, data -> gridAdapter.setItemGrid(data));
         }
 
     }
@@ -103,8 +104,8 @@ public class GridFragment extends Fragment implements OnItemClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_grid, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext().getApplicationContext(), 3);
-        recyclerView.addItemDecoration(new SpacingItemDecoration(3, Tools.dpToPx(getContext(), 8), true));
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext().getApplicationContext(), calculateColumns());
+        recyclerView.addItemDecoration(new SpacingItemDecoration(calculateColumns(), Tools.dpToPx(getContext(), 8), true));
         recyclerView.setAdapter(gridAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -125,6 +126,8 @@ public class GridFragment extends Fragment implements OnItemClickListener {
             goTo(DIAGNOSTIC_TYPE, typeId, itemGrid.getId());
         } else if (gridType.equalsIgnoreCase(DIAGNOSTIC_TYPE)) {
             goToAdd(typeId, symptomId, itemGrid.getId());
+        } else if (gridType.equalsIgnoreCase(TICKET_STATES_TYPE)) {
+            goToTicketList(itemGrid.getId());
         }
     }
 
@@ -148,4 +151,20 @@ public class GridFragment extends Fragment implements OnItemClickListener {
                 .commit();
     }
 
+    private void goToTicketList(Integer ticketStateId) {
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager()
+                .beginTransaction();
+        fragmentTransaction
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .replace(R.id.content_frame, ListTicketFragment.newInstance(ticketStateId))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private int calculateColumns() {
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int columnCount = (int) (dpWidth / 108);
+        return columnCount;
+    }
 }

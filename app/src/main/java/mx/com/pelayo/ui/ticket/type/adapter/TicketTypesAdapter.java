@@ -1,4 +1,4 @@
-package mx.com.pelayo.ui.grid;
+package mx.com.pelayo.ui.ticket.type.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -12,19 +12,20 @@ import java.util.List;
 
 import mx.com.pelayo.R;
 import mx.com.pelayo.database.entities.custom.ItemGrid;
+import mx.com.pelayo.ui.grid.OnItemClickListener;
 
-public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
+public class TicketTypesAdapter extends RecyclerView.Adapter<TicketTypesAdapter.ViewHolder> {
 
     List<ItemGrid> itemGrid;
     OnItemClickListener onItemClickListener;
 
-    public GridAdapter(OnItemClickListener onItemClickListener) {
+    public TicketTypesAdapter(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_grid, parent, false);
         return new ViewHolder(view);

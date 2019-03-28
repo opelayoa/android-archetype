@@ -16,7 +16,7 @@ import mx.com.pelayo.database.dao.security.SyncDao;
 import mx.com.pelayo.database.dao.security.UsuarioActualDao;
 import mx.com.pelayo.database.entities.Tipotd;
 import mx.com.pelayo.database.entities.composed.UsuarioActualComposed;
-import mx.com.pelayo.database.entities.custom.UsuarioInfo;
+import mx.com.pelayo.database.entities.custom.UserInformation;
 import mx.com.pelayo.database.entities.security.Sync;
 import mx.com.pelayo.database.entities.security.UsuarioActual;
 
@@ -81,7 +81,7 @@ public class SecurityRepository {
         }
     }
 
-    public UsuarioInfo getUsuarioInfo() {
+    public UserInformation getUsuarioInfo() {
         try {
             return executor.submit(() -> usuarioActualDao.getUsuarioInfo()).get();
         } catch (ExecutionException e) {
@@ -89,6 +89,10 @@ public class SecurityRepository {
         } catch (InterruptedException e) {
             return null;
         }
+    }
+
+    public LiveData<UserInformation> getUserInformation() {
+        return usuarioActualDao.getUserInfo();
     }
 
 }
