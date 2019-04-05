@@ -123,7 +123,7 @@ public class SyncRepository {
         this.tdeService = tdeService;
     }
 
-    public Observable sync() {
+    public Observable<Integer> sync() {
         return this.tdeService.getAllSatUsuarios()
                 .map(satUsuarios -> satUsuarioDao.insertAll(satUsuarios))
                 .flatMap(data -> tdeService.getAllEstados())

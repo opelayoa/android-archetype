@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -12,8 +15,12 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.google.common.collect.Iterables;
+
+import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -42,7 +49,7 @@ public class AddTicketFragment extends Fragment {
     private AutoCompleteTextView user;
     private AutoCompleteTextView diagnostic;
     private AutoCompleteTextView place;
-    private AutoCompleteTextView comment;
+    private TextView comment;
     private CheckBox approved;
     private RadioGroup options;
     private RadioButton optionStore;
@@ -72,7 +79,9 @@ public class AddTicketFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static AddTicketFragment newInstance(Integer typeId, Integer symptomId, Integer diagnosticId) {
+    public static AddTicketFragment newInstance(Integer typeId, Integer symptomId, Integer diagnosticId)
+
+    {
         AddTicketFragment fragment = new AddTicketFragment();
         Bundle args = new Bundle();
         args.putInt(TYPE_PARAM, typeId);
@@ -90,7 +99,6 @@ public class AddTicketFragment extends Fragment {
             typeId = getArguments().getInt(TYPE_PARAM);
             symptomId = getArguments().getInt(SYMPTOM_PARAM);
             diagnosticId = getArguments().getInt(DIAGNOSTIC_PARAM);
-
         }
     }
 
@@ -434,7 +442,10 @@ public class AddTicketFragment extends Fragment {
             }
         });
 
+    }
 
+    private void saveTicket() {
+        Ticket
     }
 
     private void disableView(View view) {

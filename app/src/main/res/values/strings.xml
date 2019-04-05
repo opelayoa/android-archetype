@@ -6,6 +6,8 @@
 
     <string name="icon">&#xe90d;</string>
     <string name="icon_ticket">&#xedd7;</string>
+    <string name="icon_plus">&#xed0e;</string>
+    <string name="icon_list">&#xec95;</string>
     <string name="stores_empty">Sin información de tiendas</string>
     <string name="emptyUsers">No existen usuarios asignados al Departamento.</string>
     <string name="emptyRegions">No existe Región</string>
@@ -14,5 +16,10 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
 
 </resources>

@@ -12,32 +12,72 @@
         android:weightSum="4"
         android:background="@color/colorGrey">
 
+        <LinearLayout
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:background="@color/colorPrimary">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_user_logo"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/labelName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre de Usuario"
+                android:layout_gravity="center"
+                android:fontFamily="@font/lato_heavy"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/labelPuesto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Puesto de Usuario"
+                android:layout_gravity="center"
+                android:fontFamily="@font/lato_semibold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/white" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="10dp" />
+
+
+        </LinearLayout>
+
         <android.support.v7.widget.CardView
             android:id="@+id/toAddTicket"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
             app:cardCornerRadius="2dp"
             app:cardBackgroundColor="@color/colorWhite"
-            app:cardElevation="2dp">
-            <android.support.constraint.ConstraintLayout
+            app:cardElevation="4dp">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:gravity="center">
 
-                <ImageView
-                    android:id="@+id/logoAdd"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:src="@drawable/ic_add"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_plus"
+                    android:fontFamily="@font/icomoon"
+                    android:textSize="64sp"
+                    android:textColor="@color/colorPrimary"/>
 
                 <TextView
                     android:id="@+id/labelAdd"
@@ -51,54 +91,32 @@
                     android:text="Crear nuevo ticket"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/logoAdd" />
-
-                <Button
-                    android:id="@+id/buttonAdd"
-                    android:clickable="false"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="150dp"
-                    android:layout_marginLeft="150dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="149dp"
-                    android:layout_marginRight="149dp"
-                    android:text="Ir!"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/labelAdd" />
-            </android.support.constraint.ConstraintLayout>
+                    android:textColor="@color/colorPrimary" />/>
+            </LinearLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
             android:id="@+id/toListTicket"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
             app:cardCornerRadius="2dp"
             app:cardBackgroundColor="@color/colorWhite"
-            app:cardElevation="2dp">
-            <android.support.constraint.ConstraintLayout
+            app:cardElevation="4dp">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:gravity="center">
 
-                <ImageView
-                    android:id="@+id/logoList"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:src="@drawable/ic_list"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/icon_list"
+                    android:fontFamily="@font/icomoon"
+                    android:textSize="64sp"
+                    android:textColor="@color/colorPrimary"/>
 
                 <TextView
                     android:id="@+id/labelList"
@@ -112,26 +130,10 @@
                     android:text="Lista de tickets"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/logoList" />
-
-                <Button
-                    android:id="@+id/buttonList"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="150dp"
-                    android:layout_marginLeft="150dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="149dp"
-                    android:layout_marginRight="149dp"
-                    android:text="Ir!"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/labelList" />
-            </android.support.constraint.ConstraintLayout>
+                    android:textColor="@color/colorPrimary" />/>
+            </LinearLayout>
         </android.support.v7.widget.CardView>
+
 
     </LinearLayout>
 

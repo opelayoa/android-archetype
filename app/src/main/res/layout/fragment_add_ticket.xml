@@ -222,13 +222,12 @@
                 android:layout_height="wrap_content"
                 android:theme="@style/TextInputLayout.Red">
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Observaciones"
-                    android:inputType="text"
-                    android:maxLines="1" />
+                    android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView
@@ -237,6 +236,12 @@
                 android:text="Nota: el campo observaciones no será editable después de crear el ticket."
                 android:textColor="@color/colorDisabled"
                 android:textSize="12sp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Guardar"
+                android:layout_gravity="center"/>
         </LinearLayout>
 
     </ScrollView>

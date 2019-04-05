@@ -38,18 +38,16 @@ public class HomeFragment extends Fragment {
     private void goToAdd(View view) {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                //.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.content_frame, GridFragment.newInstance(GridFragment.TYPE_TYPE, null, null))
-                .addToBackStack(null)
+                .replace(R.id.content_frame, GridFragment.newInstance(GridFragment.TYPE_TYPE, null, null), "type")
+                .addToBackStack("type")
                 .commit();
     }
 
     private void goToTicketStates(View view) {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                //.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.content_frame, GridFragment.newInstance(GridFragment.TICKET_STATES_TYPE, null, null))
-                .addToBackStack(null)
+                .replace(R.id.content_frame, GridFragment.newInstance(GridFragment.TICKET_STATES_TYPE, null, null), "ticket_type")
+                .addToBackStack("ticket_type")
                 .commit();
     }
 }

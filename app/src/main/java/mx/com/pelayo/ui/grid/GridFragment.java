@@ -121,9 +121,9 @@ public class GridFragment extends Fragment implements OnItemClickListener {
     @Override
     public void onClick(ItemGrid itemGrid) {
         if (gridType.equalsIgnoreCase(TYPE_TYPE)) {
-            goTo(SYMPTOM_TYPE, itemGrid.getId(), null);
+            goTo(SYMPTOM_TYPE, itemGrid.getId(), null, "symptom");
         } else if (gridType.equalsIgnoreCase(SYMPTOM_TYPE)) {
-            goTo(DIAGNOSTIC_TYPE, typeId, itemGrid.getId());
+            goTo(DIAGNOSTIC_TYPE, typeId, itemGrid.getId(), "diagnostic");
         } else if (gridType.equalsIgnoreCase(DIAGNOSTIC_TYPE)) {
             goToAdd(typeId, symptomId, itemGrid.getId());
         } else if (gridType.equalsIgnoreCase(TICKET_STATES_TYPE)) {
@@ -131,13 +131,13 @@ public class GridFragment extends Fragment implements OnItemClickListener {
         }
     }
 
-    private void goTo(String type, Integer typeId, Integer symptomId) {
+    private void goTo(String type, Integer typeId, Integer symptomId, String tag) {
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager()
                 .beginTransaction();
         fragmentTransaction
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                .replace(R.id.content_frame, GridFragment.newInstance(type, typeId, symptomId))
-                .addToBackStack(null)
+                .replace(R.id.content_frame, GridFragment.newInstance(type, typeId, symptomId), tag)
+                .addToBackStack(tag)
                 .commit();
     }
 
@@ -146,8 +146,8 @@ public class GridFragment extends Fragment implements OnItemClickListener {
                 .beginTransaction();
         fragmentTransaction
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                .replace(R.id.content_frame, AddTicketFragment.newInstance(typeId, symptomId, diagnosticId))
-                .addToBackStack(null)
+                .replace(R.id.content_frame, AddTicketFragment.newInstance(typeId, symptomId, diagnosticId), "ticket_add")
+                .addToBackStack("ticket_add")
                 .commit();
     }
 
@@ -156,8 +156,8 @@ public class GridFragment extends Fragment implements OnItemClickListener {
                 .beginTransaction();
         fragmentTransaction
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                .replace(R.id.content_frame, ListTicketFragment.newInstance(ticketStateId))
-                .addToBackStack(null)
+                .replace(R.id.content_frame, ListTicketFragment.newInstance(ticketStateId), "ticket_list")
+                .addToBackStack("ticket_list")
                 .commit();
     }
 

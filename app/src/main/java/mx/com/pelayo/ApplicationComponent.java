@@ -12,6 +12,7 @@ import mx.com.pelayo.ui.LoginActivity;
 import mx.com.pelayo.ui.MainActivity;
 import mx.com.pelayo.ui.grid.GridFragment;
 import mx.com.pelayo.ui.ticket.add.AddTicketFragment;
+import mx.com.pelayo.ui.ticket.detail.TicketDetailFragment;
 import mx.com.pelayo.ui.ticket.list.ListTicketFragment;
 
 @Singleton
@@ -29,4 +30,6 @@ public interface ApplicationComponent {
     void inject(AddTicketFragment addTicketFragment);
 
     void inject(ListTicketFragment listTicketFragment);
+
+    void inject(TicketDetailFragment ticketDetailFragment);
 }
