@@ -56,4 +56,20 @@ public class TicketAddRepository {
     public LiveData<ItemAutocomplete> getDiagnosticById(Integer diagnosticId) {
         return ticketAddDao.getDiagnosticById(diagnosticId);
     }
+
+    public Integer getTypeSymptomId (Integer typeId, Integer symptomId) {
+        return ticketAddDao.getTipoSintomaId(typeId, symptomId);
+    }
+
+    public String getTypeSymptomName (Integer typeId, Integer symptomId) {
+        return ticketAddDao.getTipoSintomaName(typeId, symptomId);
+    }
+
+    public Integer getSymptomDiagnosticId(Integer symptomId, Integer diagnosticId) {
+        return  ticketAddDao.getSintomaDiagnosticoId(symptomId, diagnosticId);
+    }
+
+    public String getSymptomDiagnosticName(Integer symptomId, Integer diagnosticId) {
+        return  ticketAddDao.getSintomaDiagnosticoName(symptomId, diagnosticId);
+    }
 }

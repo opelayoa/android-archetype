@@ -32,13 +32,15 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).showBanner();
+        MainActivity activity = (MainActivity) getActivity();
+        activity.showBanner();
+        activity.setTitle("Inicio");
     }
 
     private void goToAdd(View view) {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.content_frame, GridFragment.newInstance(GridFragment.TYPE_TYPE, null, null), "type")
+                .replace(R.id.content_frame, GridFragment.newInstance(GridFragment.TYPE_TYPE, null, null, "Tipo"), "type")
                 .addToBackStack("type")
                 .commit();
     }
@@ -46,7 +48,7 @@ public class HomeFragment extends Fragment {
     private void goToTicketStates(View view) {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.content_frame, GridFragment.newInstance(GridFragment.TICKET_STATES_TYPE, null, null), "ticket_type")
+                .replace(R.id.content_frame, GridFragment.newInstance(GridFragment.TICKET_STATES_TYPE, null, null, "Tipo de Ticket"), "ticket_type")
                 .addToBackStack("ticket_type")
                 .commit();
     }

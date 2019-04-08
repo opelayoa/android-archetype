@@ -58,7 +58,9 @@ public class ApplicationModule {
     @Provides
     @Singleton
     public Gson provideGson() {
-        return new GsonBuilder().create();
+        return new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                .create();
     }
 
     /**

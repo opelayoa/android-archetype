@@ -35,6 +35,7 @@ public class GridFragment extends Fragment implements OnItemClickListener {
     public static final String SYMPTOM_ID = "symptomId";
     public static final String DIAGNOSTIC_TYPE = "diagnostic";
     public static final String TICKET_STATES_TYPE = "ticket_states";
+    public static final String TITLE = "title";
 
     @Inject
     public SecurityViewModel securityViewModel;
@@ -43,13 +44,14 @@ public class GridFragment extends Fragment implements OnItemClickListener {
     private String gridType;
     private Integer typeId;
     private Integer symptomId;
-    private RecyclerView recyclerView;
+    private String title;
+
     private GridAdapter gridAdapter;
 
     public GridFragment() {
     }
 
-    public static GridFragment newInstance(String gridType, Integer typeId, Integer symptomId) {
+    public static GridFragment newInstance(String gridType, Integer typeId, Integer symptomId, String title) {
         GridFragment fragment = new GridFragment();
         Bundle args = new Bundle();
         args.putString(GRID_TYPE, gridType);
@@ -59,6 +61,10 @@ public class GridFragment extends Fragment implements OnItemClickListener {
         if (symptomId != null) {
             args.putInt(SYMPTOM_ID, symptomId);
         }
+        if (title != null) {
+            args.putString(TITLE, title);
+        }
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,6 +77,7 @@ public class GridFragment extends Fragment implements OnItemClickListener {
             gridType = getArguments().getString(GRID_TYPE);
             typeId = getArguments().getInt(TYPE_ID);
             symptomId = getArguments().getInt(SYMPTOM_ID);
+            title = getArguments().getString(TITLE);
         }
         gridAdapter = new GridAdapter(this);
         gridViewModel.getUserInformation().observe(this, this::loadItems);
@@ -80,7 +87,9 @@ public class GridFragment extends Fragment implements OnItemClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).hideBanner();
+        MainActivity activity = (MainActivity) getActivity();
+        activity.hideBanner();
+        activity.setTitle(title);
     }
 
     private void loadItems(UserInformation userInformation) {
@@ -121,9 +130,9 @@ public class GridFragment extends Fragment implements OnItemClickListener {
     @Override
     public void onClick(ItemGrid itemGrid) {
         if (gridType.equalsIgnoreCase(TYPE_TYPE)) {
-            goTo(SYMPTOM_TYPE, itemGrid.getId(), null, "symptom");
+            goTo(SYMPTOM_TYPE, itemGrid.getId(), null, "symptom", "Sintoma");
         } else if (gridType.equalsIgnoreCase(SYMPTOM_TYPE)) {
-            goTo(DIAGNOSTIC_TYPE, typeId, itemGrid.getId(), "diagnostic");
+            goTo(DIAGNOSTIC_TYPE, typeId, itemGrid.getId(), "diagnostic", "Diagnostico");
         } else if (gridType.equalsIgnoreCase(DIAGNOSTIC_TYPE)) {
             goToAdd(typeId, symptomId, itemGrid.getId());
         } else if (gridType.equalsIgnoreCase(TICKET_STATES_TYPE)) {
@@ -131,12 +140,12 @@ public class GridFragment extends Fragment implements OnItemClickListener {
         }
     }
 
-    private void goTo(String type, Integer typeId, Integer symptomId, String tag) {
+    private void goTo(String type, Integer typeId, Integer symptomId, String tag, String title) {
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager()
                 .beginTransaction();
         fragmentTransaction
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                .replace(R.id.content_frame, GridFragment.newInstance(type, typeId, symptomId), tag)
+                .replace(R.id.content_frame, GridFragment.newInstance(type, typeId, symptomId, title), tag)
                 .addToBackStack(tag)
                 .commit();
     }

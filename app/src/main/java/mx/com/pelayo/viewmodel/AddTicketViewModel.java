@@ -6,21 +6,29 @@ import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Observable;
+import mx.com.pelayo.api.TdeService;
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.custom.ItemAutocomplete;
+import mx.com.pelayo.database.entities.custom.TicketInsert;
+import mx.com.pelayo.database.entities.custom.TicketResponse;
 import mx.com.pelayo.database.entities.custom.UserInformation;
 import mx.com.pelayo.repository.SecurityRepository;
 import mx.com.pelayo.repository.TicketAddRepository;
+import retrofit2.Response;
 
 @Singleton
 public class AddTicketViewModel extends ViewModel {
 
     private TicketAddRepository ticketAddRepository;
     private SecurityRepository securityRepository;
+    private TdeService tdeService;
+    private ExecutorService executorService;
 
     private LiveData<List<ItemAutocomplete>> regions;
     private LiveData<List<Usuario>> users;
@@ -41,9 +49,11 @@ public class AddTicketViewModel extends ViewModel {
     private LiveData<RegionStates> regionStates;
 
     @Inject
-    public AddTicketViewModel(TicketAddRepository ticketAddRepository, SecurityRepository securityRepository) {
+    public AddTicketViewModel(TicketAddRepository ticketAddRepository, SecurityRepository securityRepository, TdeService tdeService, ExecutorService executorService) {
         this.securityRepository = securityRepository;
         this.ticketAddRepository = ticketAddRepository;
+        this.tdeService = tdeService;
+        this.executorService = executorService;
         this.regions = ticketAddRepository.getAllRegions();
         this.users = Transformations.switchMap(filterRegion, ticketAddRepository::getAllUsuarios);
         this.technicians = Transformations.switchMap(expertParams, technicalParams -> {
@@ -129,6 +139,42 @@ public class AddTicketViewModel extends ViewModel {
 
     public UserInformation getUsuarioInfo() {
         return securityRepository.getUsuarioInfo();
+    }
+
+    public Observable<Response<TicketResponse>> insertTicket(TicketInsert ticketInsert) {
+        return tdeService.insertTicket(ticketInsert);
+    }
+
+    public Integer getTypeSymptomId(Integer typeId, Integer symptomId) {
+        try {
+            return executorService.submit(() -> ticketAddRepository.getTypeSymptomId(typeId, symptomId)).get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public String getTypeSymptomName(Integer typeId, Integer symptomId) {
+        try {
+            return executorService.submit(() -> ticketAddRepository.getTypeSymptomName(typeId, symptomId)).get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Integer getSymptomDiagnostic(Integer symptomId, Integer diagnosticId) {
+        try {
+            return executorService.submit(() -> ticketAddRepository.getSymptomDiagnosticId(symptomId, diagnosticId)).get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public String getSymptomDiagnosticName(Integer symptomId, Integer diagnosticId) {
+        try {
+            return executorService.submit(() -> ticketAddRepository.getSymptomDiagnosticName(symptomId, diagnosticId)).get();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static class ExpertParams {

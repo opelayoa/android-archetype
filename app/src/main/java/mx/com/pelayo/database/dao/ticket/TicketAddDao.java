@@ -38,4 +38,16 @@ public interface TicketAddDao {
 
     @Query("select id, descripcion as label from diagnostico where id = :diagnosticId")
     LiveData<ItemAutocomplete> getDiagnosticById(Integer diagnosticId);
+
+    @Query("select id from tipo_sintoma where tipo_id = :typeId and sintoma_id = :symptomId")
+    Integer getTipoSintomaId(Integer typeId, Integer symptomId);
+
+    @Query("select sintoma from tipo_sintoma where tipo_id = :typeId and sintoma_id = :symptomId")
+    String getTipoSintomaName(Integer typeId, Integer symptomId);
+
+    @Query("select id from sintoma_diagnostico where sintoma_id = :symptomId and diagnostico_id = :diagnosticId")
+    Integer getSintomaDiagnosticoId(Integer symptomId, Integer diagnosticId);
+
+    @Query("select diagnostico from sintoma_diagnostico where sintoma_id = :symptomId and diagnostico_id = :diagnosticId")
+    String getSintomaDiagnosticoName(Integer symptomId, Integer diagnosticId);
 }

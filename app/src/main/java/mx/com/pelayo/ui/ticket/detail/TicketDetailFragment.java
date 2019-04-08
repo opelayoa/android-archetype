@@ -17,6 +17,7 @@ import io.reactivex.schedulers.Schedulers;
 import mx.com.pelayo.App;
 import mx.com.pelayo.R;
 import mx.com.pelayo.api.entities.TicketInfo;
+import mx.com.pelayo.ui.MainActivity;
 import mx.com.pelayo.ui.util.DialogFactory;
 import mx.com.pelayo.util.Tools;
 import mx.com.pelayo.viewmodel.DetailTicketViewModel;
@@ -74,6 +75,14 @@ public class TicketDetailFragment extends Fragment {
         if (getArguments() != null) {
             ticketId = getArguments().getInt(TICKET_ID_PARAM);
         }
+    }
+
+    @Override
+    public void onResume() {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.hideBanner();
+        activity.setTitle("Detalle de Ticket");
+        super.onResume();
     }
 
     @Override

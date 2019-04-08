@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -28,18 +30,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActionBarDrawerToggle toggle;
     private boolean toolBarNavigationListenerIsRegistered = false;
 
+    private LinearLayout banner;
+    private TextView labelName;
+    private TextView labelPuesto;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        banner = findViewById(R.id.banner);
+        labelName = findViewById(R.id.labelName);
+        labelPuesto = findViewById(R.id.labelPuesto);
 
         initToolbar();
         ((App) getApplicationContext()).getApplicationComponent().inject(this);
         int count = getSupportFragmentManager().getBackStackEntryCount();
         securityViewModel.getUsuarioActual().observe(this, usuarioActual -> {
-            //labelName.setText(usuarioActual.usuarioActual.getNombre().trim() + " " + usuarioActual.usuarioActual.getApellido().trim());
-            //labelPuesto.setText(usuarioActual.puestos.get(0).getNombre());
+            labelName.setText(usuarioActual.usuarioActual.getNombre().trim() + " " + usuarioActual.usuarioActual.getApellido().trim());
+            labelPuesto.setText(usuarioActual.puestos.get(0).getNombre());
         });
         if (count == 0) {
             getSupportFragmentManager()
@@ -53,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         drawer = findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
@@ -61,13 +71,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
+    public void setTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
     public void hideBanner() {
-
         enableViews(true);
-
     }
 
     public void showBanner() {
@@ -77,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void enableViews(boolean enable) {
 
         if(enable) {
+            banner.setVisibility(View.GONE);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toggle.setDrawerIndicatorEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -90,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 toolBarNavigationListenerIsRegistered = true;
             }
         } else {
+            banner.setVisibility(View.VISIBLE);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             toggle.setDrawerIndicatorEnabled(true);

@@ -35,7 +35,12 @@ import mx.com.pelayo.database.entities.TipoSucursal;
 import mx.com.pelayo.database.entities.Tipotd;
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.Zona;
+import mx.com.pelayo.database.entities.custom.TicketInsert;
+import mx.com.pelayo.database.entities.custom.TicketResponse;
+import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface TdeService {
@@ -132,4 +137,7 @@ public interface TdeService {
 
     @GET("tickets/summary/user/{userId}/type/{ticketStateId}")
     Observable<List<TicketSummary>> getTicketsSummary(@Path("userId") Integer userId, @Path("ticketStateId") Integer ticketStateId);
+
+    @POST("tickets")
+    Observable<Response<TicketResponse>> insertTicket(@Body TicketInsert ticketInsert);
 }

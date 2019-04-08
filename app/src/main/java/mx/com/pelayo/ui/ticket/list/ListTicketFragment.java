@@ -21,6 +21,7 @@ import mx.com.pelayo.App;
 import mx.com.pelayo.R;
 import mx.com.pelayo.api.entities.TicketSummary;
 import mx.com.pelayo.database.entities.custom.ItemGrid;
+import mx.com.pelayo.ui.MainActivity;
 import mx.com.pelayo.ui.ticket.detail.TicketDetailFragment;
 import mx.com.pelayo.ui.ticket.list.adapter.ListTicketAdapter;
 import mx.com.pelayo.ui.ticket.list.listener.OnItemTicketListener;
@@ -48,6 +49,15 @@ public class ListTicketFragment extends Fragment implements OnItemTicketListener
         args.putInt(TICKET_STATE_ID_PARAM, ticketStateId);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.hideBanner();
+        activity.setTitle("Lista de Tickets");
+
+        super.onResume();
     }
 
     @Override

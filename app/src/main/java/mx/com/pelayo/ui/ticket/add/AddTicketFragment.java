@@ -1,12 +1,10 @@
 package mx.com.pelayo.ui.ticket.add;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -16,27 +14,35 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.google.common.collect.Iterables;
 
-import org.w3c.dom.Text;
+import java.util.Date;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 import mx.com.pelayo.App;
 import mx.com.pelayo.R;
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.custom.ItemAutocomplete;
+import mx.com.pelayo.database.entities.custom.TicketInsert;
+import mx.com.pelayo.database.entities.custom.TicketResponse;
 import mx.com.pelayo.database.entities.custom.UserInformation;
+import mx.com.pelayo.ui.MainActivity;
 import mx.com.pelayo.ui.ticket.add.adapter.CustomArrayAdapter;
+import mx.com.pelayo.ui.util.DialogFactory;
+import mx.com.pelayo.util.Tools;
 import mx.com.pelayo.viewmodel.AddTicketViewModel;
+import retrofit2.Response;
 
 public class AddTicketFragment extends Fragment {
 
     private static final String TYPE_PARAM = "type_id";
-    private static final String SYMPTOM_PARAM = "symptom";
-    private static final String DIAGNOSTIC_PARAM = "symptom";
+    private static final String SYMPTOM_PARAM = "symptom_id";
+    private static final String DIAGNOSTIC_PARAM = "diagnostic_id";
 
     @Inject
     AddTicketViewModel addTicketViewModel;
@@ -60,6 +66,10 @@ public class AddTicketFragment extends Fragment {
     private LinearLayout layoutOther;
     private LinearLayout layoutStore;
 
+    private Dialog progressDialog;
+    private Dialog errorDialog;
+    private Dialog infoDialog;
+
     private int typeId;
     private int symptomId;
     private int diagnosticId;
@@ -69,9 +79,16 @@ public class AddTicketFragment extends Fragment {
     private Integer expertId;
     private Integer districtId;
     private Integer storeId;
-
     private Integer departmentId;
     private Integer userId;
+
+    private String departmentName;
+    private String districtName;
+    private String regionName;
+    private String userName;
+    private String storeName;
+    private String applicantName;
+    private String expertName;
 
     private UserInformation usuarioInfo;
 
@@ -79,9 +96,7 @@ public class AddTicketFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static AddTicketFragment newInstance(Integer typeId, Integer symptomId, Integer diagnosticId)
-
-    {
+    public static AddTicketFragment newInstance(Integer typeId, Integer symptomId, Integer diagnosticId) {
         AddTicketFragment fragment = new AddTicketFragment();
         Bundle args = new Bundle();
         args.putInt(TYPE_PARAM, typeId);
@@ -103,6 +118,14 @@ public class AddTicketFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.hideBanner();
+        activity.setTitle("Crear Ticket");
+        super.onResume();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_ticket, container, false);
@@ -119,6 +142,9 @@ public class AddTicketFragment extends Fragment {
         configApproved(view);
         configComment(view);
         configRegionStates(view);
+        view.findViewById(R.id.save).setOnClickListener(v -> {
+            saveTicket();
+        });
         return view;
     }
 
@@ -132,9 +158,11 @@ public class AddTicketFragment extends Fragment {
             ItemAutocomplete item = Iterables.tryFind(regions, input -> input.getId().equals(usuarioInfo.getRegionId())).orNull();
             if (item != null) {
                 regionId = item.getId();
+                regionName = item.getLabel();
                 region.setText(item.getLabel());
             } else {
                 regionId = regions.get(0).getId();
+                regionName = regions.get(0).getLabel();
                 region.setText(regions.get(0).getLabel());
             }
             region.setOnFocusChangeListener((v, hasFocus) -> {
@@ -155,6 +183,7 @@ public class AddTicketFragment extends Fragment {
         region.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             regionId = data.getId();
+            regionName = data.getLabel();
             addTicketViewModel.setFilterRegion(regionId);
             addTicketViewModel.setExpertParams(new AddTicketViewModel.ExpertParams(departmentId, regionId));
             hideKeyboard();
@@ -174,10 +203,12 @@ public class AddTicketFragment extends Fragment {
             if (item != null) {
                 applicant.setText(item.toString());
                 applicantId = item.getId();
+                applicantName = item.toString();
                 departmentId = item.getDepartamentoId();
             } else {
                 applicant.setText(applicants.get(0).toString());
                 applicantId = applicants.get(0).getId();
+                applicantName = applicants.get(0).toString();
                 departmentId = applicants.get(0).getDepartamentoId();
             }
             applicant.setOnFocusChangeListener((v, hasFocus) -> {
@@ -198,7 +229,8 @@ public class AddTicketFragment extends Fragment {
         applicant.setAdapter(applicantAdapter);
         applicant.setOnItemClickListener((parent, view1, position, id) -> {
             Usuario data = (Usuario) parent.getItemAtPosition(position);
-            this.applicantId = data.getId();
+            applicantId = data.getId();
+            applicantName = data.toString();
             addTicketViewModel.setExpertParams(new AddTicketViewModel.ExpertParams(data.getDepartamentoId(), regionId));
             hideKeyboard();
         });
@@ -214,6 +246,7 @@ public class AddTicketFragment extends Fragment {
             expertAdapter.notifyDataSetChanged();
             expert.setText(experts.get(0).getLabel());
             expertId = experts.get(0).getId();
+            expertName = experts.get(0).getLabel();
             expert.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
                     expert.setText("");
@@ -221,6 +254,7 @@ public class AddTicketFragment extends Fragment {
                     ItemAutocomplete item = Iterables.tryFind(experts, input -> input.getId() == expertId).orNull();
                     if (item != null) {
                         expert.setText(item.toString());
+
                     } else {
                         expert.setText(getString(R.string.emptyExperts));
                     }
@@ -231,6 +265,7 @@ public class AddTicketFragment extends Fragment {
         expert.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             expertId = data.getId();
+            expertName = data.getLabel();
             hideKeyboard();
         });
         expert.setOnClickListener(v -> expert.setText(""));
@@ -245,6 +280,7 @@ public class AddTicketFragment extends Fragment {
             districtAdapter.notifyDataSetChanged();
             district.setText(districts.get(0).getLabel());
             districtId = districts.get(0).getId();
+            districtName = districts.get(0).getLabel();
             this.addTicketViewModel.setFilterDistrict(districtId);
             district.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
@@ -252,6 +288,7 @@ public class AddTicketFragment extends Fragment {
                 } else {
                     ItemAutocomplete item = Iterables.tryFind(districts, input -> input.getId() == districtId).orNull();
                     district.setText(item.getLabel());
+                    districtName = item.getLabel();
                 }
             });
         });
@@ -259,6 +296,7 @@ public class AddTicketFragment extends Fragment {
         district.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             districtId = data.getId();
+            districtName = data.getLabel();
             this.addTicketViewModel.setFilterDistrict(districtId);
             hideKeyboard();
         });
@@ -278,9 +316,11 @@ public class AddTicketFragment extends Fragment {
             if (stores != null && stores.size() > 0) {
                 store.setText(stores.get(0).getLabel());
                 storeId = stores.get(0).getId();
+                storeName = stores.get(0).getLabel();
                 enableView(store);
             } else {
                 store.setText(getString(R.string.stores_empty));
+                storeName = getString(R.string.stores_empty);
                 disableView(store);
                 storeId = null;
             }
@@ -302,6 +342,7 @@ public class AddTicketFragment extends Fragment {
         store.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             this.storeId = data.getId();
+            storeName = data.getLabel();
             hideKeyboard();
         });
         store.setOnClickListener(v -> store.setText(""));
@@ -316,6 +357,7 @@ public class AddTicketFragment extends Fragment {
             departmentAdapter.notifyDataSetChanged();
             department.setText(departments.get(0).getLabel());
             departmentId = departments.get(0).getId();
+            departmentName = departments.get(0).getLabel();
             department.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
                     department.setText("");
@@ -330,6 +372,7 @@ public class AddTicketFragment extends Fragment {
         department.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             departmentId = data.getId();
+            departmentName = data.getLabel();
             addTicketViewModel.setFilterDepartment(departmentId);
             hideKeyboard();
         });
@@ -346,11 +389,13 @@ public class AddTicketFragment extends Fragment {
             if (users != null && users.size() > 0) {
                 user.setText(users.get(0).getLabel());
                 userId = users.get(0).getId();
+                userName = users.get(0).getLabel();
                 enableView(user);
             } else {
                 disableView(user);
                 user.setText(getString(R.string.emptyUsers));
                 userId = null;
+                userName = null;
             }
             user.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
@@ -365,6 +410,7 @@ public class AddTicketFragment extends Fragment {
         user.setOnItemClickListener((parent, view1, position, id) -> {
             ItemAutocomplete data = (ItemAutocomplete) parent.getItemAtPosition(position);
             userId = data.getId();
+            userName = data.getLabel();
             hideKeyboard();
         });
         user.setOnClickListener(v -> user.setText(""));
@@ -445,6 +491,65 @@ public class AddTicketFragment extends Fragment {
     }
 
     private void saveTicket() {
+        progressDialog = DialogFactory.getProgressDialog(this.getContext(), "Espere...");
+        progressDialog.show();
+        TicketInsert ticketInsert = new TicketInsert();
+        ticketInsert.setSolicitanteId(applicantId);
+        ticketInsert.setSolicitanteName(applicantName);
+        ticketInsert.setCapturistaId(usuarioInfo.getId());
+        ticketInsert.setCapturistaName(usuarioInfo.getApellido() + ", " + usuarioInfo.getApellido());
+        if (usuarioInfo.getRegionId() >= 1000) {
+            ticketInsert.setCategoria(3);
+        } else {
+            ticketInsert.setCategoria(1);
+        }
+        ticketInsert.setCorreoManual(false);
+        ticketInsert.setDepartamento(departmentName);
+        ticketInsert.setDiagnosticoId(diagnosticId);
+        ticketInsert.setDistrito(districtName);
+        ticketInsert.setFechaApertura(new Date());
+        ticketInsert.setLugarId(regionId);
+        ticketInsert.setLugarName(regionName);
+        ticketInsert.setCapturistaName(usuarioInfo.getApellido() + ", " + usuarioInfo.getNombre());
+        ticketInsert.setTecnicoId(expertId);
+        ticketInsert.setTecnicoName(expertName);
+        ticketInsert.setObservaciones(comment.getText().toString());
+        ticketInsert.setUsuario(userName);
+        ticketInsert.setTienda(storeName);
+        ticketInsert.setSolucionRemota(false);
+        ticketInsert.setTipo(typeId);
+        ticketInsert.setSintomaId(addTicketViewModel.getTypeSymptomId(typeId, symptomId));
+        ticketInsert.setDiagnosticoId(addTicketViewModel.getSymptomDiagnostic(symptomId, diagnosticId));
+        String legend = "TDE - " + addTicketViewModel.getTypeSymptomName(typeId, symptomId) + " - " + addTicketViewModel.getSymptomDiagnosticName(symptomId, diagnosticId);
+        if (legend.length() > 45) {
+            legend = legend.substring(0, 45);
+        }
+        ticketInsert.setLeyenda(legend);
+        addTicketViewModel.insertTicket(ticketInsert)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DisposableObserver<Response<TicketResponse>>() {
+
+                    @Override
+                    public void onNext(Response<TicketResponse> ticketResponse) {
+                        progressDialog.dismiss();
+                        DialogFactory.DialogListener dialogListener = dialog -> AddTicketFragment.this.getActivity().onBackPressed();
+                        infoDialog = DialogFactory.getInfoDialog(AddTicketFragment.this.getContext(), "Se generó el ticket correctamente: " + ticketResponse.body().getTicketId(), dialogListener);
+                        infoDialog.show();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                        progressDialog.dismiss();
+                        errorDialog = DialogFactory.getErrorDialog(AddTicketFragment.this.getContext(), Tools.parseError(throwable));
+                        errorDialog.show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
 
     }
 
