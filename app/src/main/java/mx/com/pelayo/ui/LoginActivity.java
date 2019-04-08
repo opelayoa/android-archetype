@@ -1,13 +1,13 @@
 package mx.com.pelayo.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -16,6 +16,8 @@ import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import mx.com.pelayo.App;
 import mx.com.pelayo.R;
+import mx.com.pelayo.ui.util.DialogFactory;
+import mx.com.pelayo.util.Tools;
 import mx.com.pelayo.viewmodel.SecurityViewModel;
 import mx.com.pelayo.viewmodel.SyncViewModel;
 
@@ -31,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText username;
     private EditText password;
     private Button login;
+    private Dialog progressDialog;
+    private Dialog errorDialog;
 
     @SuppressLint("CheckResult")
     @Override
@@ -47,6 +51,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void login(View view) {
+        progressDialog = DialogFactory.getProgressDialog(this, "Autenticando...");
+        progressDialog.show();
         securityViewModel
                 .login(username.getText().toString(),
                         password.getText().toString(),
@@ -55,20 +61,26 @@ public class LoginActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .subscribe(data -> {
                             if (data.getStatus() == 0 || data.getStatus() == 2) {
+                                progressDialog.dismiss();
                                 sync();
                             } else {
+                                progressDialog.dismiss();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                             }
                         }
                         , throwable -> {
-                            System.out.println("Error: " + throwable.toString());
+                            progressDialog.dismiss();
+                            errorDialog = DialogFactory.getErrorDialog(this, "Usuario y/o contraseña incorrecta.");
+                            errorDialog.show();
                         });
 
     }
 
     private void sync() {
+        progressDialog = DialogFactory.getProgressDialog(this, "Sincronizando...");
+        progressDialog.show();
         syncViewModel.sync()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -79,12 +91,15 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        Toast.makeText(LoginActivity.this, "Error al sincronizar..." + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    public void onError(Throwable throwable) {
+                        progressDialog.dismiss();
+                        errorDialog = DialogFactory.getErrorDialog(LoginActivity.this, Tools.parseError(throwable));
+                        errorDialog.show();
                     }
 
                     @Override
                     public void onComplete() {
+                        progressDialog.dismiss();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();

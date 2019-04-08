@@ -1,5 +1,6 @@
 package mx.com.pelayo.ui.ticket.detail;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import io.reactivex.schedulers.Schedulers;
 import mx.com.pelayo.App;
 import mx.com.pelayo.R;
 import mx.com.pelayo.api.entities.TicketInfo;
+import mx.com.pelayo.ui.util.DialogFactory;
 import mx.com.pelayo.util.Tools;
 import mx.com.pelayo.viewmodel.DetailTicketViewModel;
 
@@ -48,6 +50,9 @@ public class TicketDetailFragment extends Fragment {
     private CheckBox manualEmail;
     private TextView projectStatus;
     private Integer ticketId;
+
+    private Dialog progressDialog;
+    private Dialog errorDialog;
 
     public TicketDetailFragment() {
         // Required empty public constructor
@@ -100,13 +105,18 @@ public class TicketDetailFragment extends Fragment {
         capturist = view.findViewById(R.id.observations);
         manualEmail = view.findViewById(R.id.manualMail);
         projectStatus = view.findViewById(R.id.projectStatus);
+        progressDialog = DialogFactory.getProgressDialog(this.getContext(), "Espere...");
+        progressDialog.show();
         detailTicketViewModel.getTicketDetail(ticketId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(ticketInfo -> {
+                    progressDialog.dismiss();
                     setInfo(ticketInfo);
                 }, throwable -> {
-                    throwable.printStackTrace();
+                    DialogFactory.DialogListener dialogListener = dialog -> TicketDetailFragment.this.getActivity().onBackPressed();
+                    errorDialog = DialogFactory.getErrorDialog(this.getContext(), Tools.parseError(throwable), dialogListener);
+                    errorDialog.show();
                 });
         return view;
     }

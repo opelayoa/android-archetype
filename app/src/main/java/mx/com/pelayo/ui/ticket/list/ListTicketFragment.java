@@ -1,5 +1,6 @@
 package mx.com.pelayo.ui.ticket.list;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,8 @@ import mx.com.pelayo.database.entities.custom.ItemGrid;
 import mx.com.pelayo.ui.ticket.detail.TicketDetailFragment;
 import mx.com.pelayo.ui.ticket.list.adapter.ListTicketAdapter;
 import mx.com.pelayo.ui.ticket.list.listener.OnItemTicketListener;
+import mx.com.pelayo.ui.util.DialogFactory;
+import mx.com.pelayo.util.Tools;
 import mx.com.pelayo.viewmodel.ListTicketViewModel;
 
 public class ListTicketFragment extends Fragment implements OnItemTicketListener {
@@ -32,6 +35,9 @@ public class ListTicketFragment extends Fragment implements OnItemTicketListener
     ListTicketViewModel listTicketViewModel;
     private Integer ticketStateId;
     private ListTicketAdapter listTicketAdapter;
+
+    private Dialog progressDialog;
+    private Dialog errorDialog;
 
     public ListTicketFragment() {
     }
@@ -51,15 +57,20 @@ public class ListTicketFragment extends Fragment implements OnItemTicketListener
         if (getArguments() != null) {
             this.ticketStateId = getArguments().getInt(TICKET_STATE_ID_PARAM);
         }
+        progressDialog = DialogFactory.getProgressDialog(this.getContext(), "Espere...");
+        progressDialog.show();
         listTicketAdapter = new ListTicketAdapter(this);
         listTicketViewModel.getTicketsSummary(ticketStateId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(data -> {
+                            progressDialog.dismiss();
                             listTicketAdapter.setTickets(data);
                         }
                         , throwable -> {
-                            System.out.println("Error: " + throwable.toString());
+                            DialogFactory.DialogListener dialogListener = dialog -> ListTicketFragment.this.getActivity().onBackPressed();
+                            errorDialog = DialogFactory.getErrorDialog(this.getContext(), Tools.parseError(throwable), dialogListener);
+                            errorDialog.show();
                         });
     }
 

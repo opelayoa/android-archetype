@@ -15,7 +15,11 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.Code39Writer;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+
 import mx.com.pelayo.R;
+import retrofit2.HttpException;
 
 public class Tools {
 
@@ -62,6 +66,32 @@ public class Tools {
             }
         }
         return aux.trim();
+    }
+
+    public static String parseError(Throwable throwable) {
+        String error = "";
+        if (throwable instanceof HttpException) {
+            HttpException httpException = (HttpException) throwable;
+            switch (httpException.code()){
+                case 500:
+                    error = "Error Interno del Servidor";
+                    break;
+                case 404:
+                    error = "Recurso no encontrado";
+                    break;
+                case 401:
+                    error = "Necesitas autenticación";
+                    break;
+                case 403:
+                    error = "No tienes permisos para ver este recurso";
+                    break;
+            }
+        } else if (throwable instanceof SocketTimeoutException){
+            error = "Se agoto el tiempo, intentalo más tarde";
+        } else if (throwable instanceof IOException){
+            error = "Ocurrio un error inesperado, intentelo más tarde";
+        }
+        return error;
     }
 
 }

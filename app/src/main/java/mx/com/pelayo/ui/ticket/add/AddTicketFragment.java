@@ -445,7 +445,7 @@ public class AddTicketFragment extends Fragment {
     }
 
     private void saveTicket() {
-        Ticket
+
     }
 
     private void disableView(View view) {
