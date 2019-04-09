@@ -1,7 +1,9 @@
 package mx.com.pelayo.modules;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -83,5 +85,11 @@ public class ApplicationModule {
             Log.e(TAG, "Error loading local configuration", e);
         }
         return jsonObject;
+    }
+
+    @Provides
+    @Singleton
+    public SharedPreferences provideSharePreferences(Application application) {
+        return PreferenceManager.getDefaultSharedPreferences(application);
     }
 }

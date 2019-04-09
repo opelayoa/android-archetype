@@ -11,6 +11,7 @@ import mx.com.pelayo.repository.TicketAddRepository;
 import mx.com.pelayo.ui.LoginActivity;
 import mx.com.pelayo.ui.MainActivity;
 import mx.com.pelayo.ui.grid.GridFragment;
+import mx.com.pelayo.ui.splash.SplashActivity;
 import mx.com.pelayo.ui.ticket.add.AddTicketFragment;
 import mx.com.pelayo.ui.ticket.detail.TicketDetailFragment;
 import mx.com.pelayo.ui.ticket.list.ListTicketFragment;
@@ -32,4 +33,6 @@ public interface ApplicationComponent {
     void inject(ListTicketFragment listTicketFragment);
 
     void inject(TicketDetailFragment ticketDetailFragment);
+
+    void inject(SplashActivity splashActivity);
 }

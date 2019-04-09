@@ -1,5 +1,7 @@
 package mx.com.pelayo.ui;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -28,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Inject
     SecurityViewModel securityViewModel;
 
+    @Inject
+    SharedPreferences sharedPreferences;
+
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
     private boolean toolBarNavigationListenerIsRegistered = false;
@@ -40,15 +45,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         banner = findViewById(R.id.banner);
         labelName = findViewById(R.id.labelName);
         labelPuesto = findViewById(R.id.labelPuesto);
-
         initToolbar();
         ((App) getApplicationContext()).getApplicationComponent().inject(this);
         int count = getSupportFragmentManager().getBackStackEntryCount();
-
         securityViewModel.getUsuarioInformationLiveData().observe(this, userInformation -> {
             labelName.setText(userInformation.getNombre() + " " + userInformation.getApellido());
             if (userInformation.getPuesto_desc() != null) {
@@ -79,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
@@ -98,13 +99,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void enableViews(boolean enable) {
-
-        if(enable) {
+        if (enable) {
             banner.setVisibility(GONE);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toggle.setDrawerIndicatorEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            if(!toolBarNavigationListenerIsRegistered) {
+            if (!toolBarNavigationListenerIsRegistered) {
                 toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -141,6 +141,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        return false;
+        int id = menuItem.getItemId();
+        if (id == R.id.nav_sync) {
+        } else if (id == R.id.nav_sign_out) {
+            sharedPreferences
+                    .edit()
+                    .clear()
+                    .commit();
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

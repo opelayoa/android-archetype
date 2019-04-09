@@ -22,6 +22,7 @@ public interface EstadoDao {
             "left join icon_entity ie on estado.id = ie.entity_id and ie.entity_type = 'ticket_state'\n" +
             "left join icon on ie.icon_name = icon.nombre\n" +
             "where estado.oculto <> 1\n" +
+            "and estado.id in (1, 2)\n" +
             "order by estado.id;")
     LiveData<List<ItemGrid>> getAllTicketStates();
 }
