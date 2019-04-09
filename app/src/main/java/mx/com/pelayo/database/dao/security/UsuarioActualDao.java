@@ -28,6 +28,7 @@ public interface UsuarioActualDao {
     UsuarioActual getUsuarioActual();
 
     @Query("select usuario.id, usuario.apellido, usuario.nombre, usuario.email, sucursal.id as sucusalId, \n" +
+            "       almacen.id as almacenId, almacen.nombre as almacenDesc, almacen.numero3b as numero3b,   \n" +
             "       sucursal.nombre as sucursalDesc, region.rclave as regionId, region.rdesc as regionDesc, \n" +
             "       perfil.id as perfilId, perfil.nombre as perfilDesc, puestos.id as puestoId,\n" +
             "       puestos.nombre as puestoDesc, departamento.id as departamentoId, departamento.nombre as departamentoDesc\n" +
@@ -41,6 +42,7 @@ public interface UsuarioActualDao {
     UserInformation getUsuarioInfo();
 
     @Query("select usuario.id, usuario.apellido, usuario.nombre, usuario.email, sucursal.id as sucusalId, \n" +
+            "       almacen.id as almacenId, almacen.nombre as almacenDesc, almacen.numero3b as numero3b,   \n" +
             "       sucursal.nombre as sucursalDesc, region.rclave as regionId, region.rdesc as regionDesc, \n" +
             "       perfil.id as perfilId, perfil.nombre as perfilDesc, puestos.id as puestoId,\n" +
             "       puestos.nombre as puestoDesc, departamento.id as departamentoId, departamento.nombre as departamentoDesc\n" +

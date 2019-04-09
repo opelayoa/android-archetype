@@ -30,6 +30,7 @@ public class SecurityRepository {
     public SyncDao syncDao;
 
     private LiveData<UsuarioActualComposed> usuarioActual;
+    private LiveData<UserInformation> userInformationLiveData;
 
     @Inject
     public SecurityRepository(ExecutorService executor, SecurityService securityService, SessionDao sessionDao,
@@ -40,6 +41,7 @@ public class SecurityRepository {
         this.usuarioActualDao = usuarioActualDao;
         this.syncDao = syncDao;
         this.usuarioActual = usuarioActualDao.getUsuarioActualLiveData();
+        this.userInformationLiveData = usuarioActualDao.getUserInfo();
     }
 
     public Observable<Sync> login(String username, String password, String basic) {
@@ -69,6 +71,10 @@ public class SecurityRepository {
 
     public LiveData<UsuarioActualComposed> getUsuarioActual() {
         return usuarioActual;
+    }
+
+    public LiveData<UserInformation> getUserInformationLiveData() {
+        return userInformationLiveData;
     }
 
     public UsuarioActual getUsuarioActualSynchronous() {

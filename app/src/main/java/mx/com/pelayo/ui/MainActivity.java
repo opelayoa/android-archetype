@@ -21,6 +21,8 @@ import mx.com.pelayo.R;
 import mx.com.pelayo.ui.home.HomeFragment;
 import mx.com.pelayo.viewmodel.SecurityViewModel;
 
+import static android.view.View.GONE;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @Inject
@@ -46,9 +48,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initToolbar();
         ((App) getApplicationContext()).getApplicationComponent().inject(this);
         int count = getSupportFragmentManager().getBackStackEntryCount();
-        securityViewModel.getUsuarioActual().observe(this, usuarioActual -> {
-            labelName.setText(usuarioActual.usuarioActual.getNombre().trim() + " " + usuarioActual.usuarioActual.getApellido().trim());
-            labelPuesto.setText(usuarioActual.puestos.get(0).getNombre());
+
+        securityViewModel.getUsuarioInformationLiveData().observe(this, userInformation -> {
+            labelName.setText(userInformation.getNombre() + " " + userInformation.getApellido());
+            if (userInformation.getPuesto_desc() != null) {
+                labelPuesto.setText(userInformation.getPuesto_desc());
+            } else {
+                labelPuesto.setVisibility(GONE);
+            }
+
         });
         if (count == 0) {
             getSupportFragmentManager()
@@ -92,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void enableViews(boolean enable) {
 
         if(enable) {
-            banner.setVisibility(View.GONE);
+            banner.setVisibility(GONE);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toggle.setDrawerIndicatorEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

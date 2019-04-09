@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 import io.reactivex.Observable;
 import mx.com.pelayo.database.entities.Usuario;
 import mx.com.pelayo.database.entities.composed.UsuarioActualComposed;
+import mx.com.pelayo.database.entities.custom.UserInformation;
 import mx.com.pelayo.database.entities.security.Sync;
 import mx.com.pelayo.repository.SecurityRepository;
 
@@ -32,6 +33,14 @@ public class SecurityViewModel extends ViewModel {
 
     public LiveData<UsuarioActualComposed> getUsuarioActual() {
         return securityRepository.getUsuarioActual();
+    }
+
+    public LiveData<UserInformation> getUsuarioInformationLiveData(){
+        return securityRepository.getUserInformationLiveData();
+    }
+
+    public UserInformation getUsuerioInformation() {
+        return securityRepository.getUsuarioInfo();
     }
 
 }

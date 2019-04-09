@@ -22,8 +22,8 @@ public class ListTicketViewModel extends ViewModel {
         this.ticketListRepository = ticketListRepository;
     }
 
-    public Observable<List<TicketSummary>> getTicketsSummary(Integer ticketStatusId) {
-        return ticketListRepository.getTicketsSummary(null, ticketStatusId);
+    public Observable<List<TicketSummary>> getTicketsSummary(Integer userId, Integer ticketStatusId) {
+        return ticketListRepository.getTicketsSummary(userId, ticketStatusId);
     }
 
     public Observable<TicketInfo> getTicketInfo(Integer ticketId) {

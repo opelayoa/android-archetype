@@ -21,6 +21,7 @@ import mx.com.pelayo.App;
 import mx.com.pelayo.R;
 import mx.com.pelayo.api.entities.TicketSummary;
 import mx.com.pelayo.database.entities.custom.ItemGrid;
+import mx.com.pelayo.database.entities.custom.UserInformation;
 import mx.com.pelayo.ui.MainActivity;
 import mx.com.pelayo.ui.ticket.detail.TicketDetailFragment;
 import mx.com.pelayo.ui.ticket.list.adapter.ListTicketAdapter;
@@ -28,17 +29,22 @@ import mx.com.pelayo.ui.ticket.list.listener.OnItemTicketListener;
 import mx.com.pelayo.ui.util.DialogFactory;
 import mx.com.pelayo.util.Tools;
 import mx.com.pelayo.viewmodel.ListTicketViewModel;
+import mx.com.pelayo.viewmodel.SecurityViewModel;
 
 public class ListTicketFragment extends Fragment implements OnItemTicketListener {
 
     private static final String TICKET_STATE_ID_PARAM = "ticket_state_id";
     @Inject
     ListTicketViewModel listTicketViewModel;
+    @Inject
+    SecurityViewModel securityViewModel;
+
     private Integer ticketStateId;
     private ListTicketAdapter listTicketAdapter;
 
     private Dialog progressDialog;
     private Dialog errorDialog;
+    private UserInformation userInformation;
 
     public ListTicketFragment() {
     }
@@ -67,10 +73,13 @@ public class ListTicketFragment extends Fragment implements OnItemTicketListener
         if (getArguments() != null) {
             this.ticketStateId = getArguments().getInt(TICKET_STATE_ID_PARAM);
         }
+
+        userInformation = securityViewModel.getUsuerioInformation();
+
         progressDialog = DialogFactory.getProgressDialog(this.getContext(), "Espere...");
         progressDialog.show();
         listTicketAdapter = new ListTicketAdapter(this);
-        listTicketViewModel.getTicketsSummary(ticketStateId)
+        listTicketViewModel.getTicketsSummary(userInformation.getId(), ticketStateId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(data -> {
@@ -78,6 +87,7 @@ public class ListTicketFragment extends Fragment implements OnItemTicketListener
                             listTicketAdapter.setTickets(data);
                         }
                         , throwable -> {
+                            progressDialog.dismiss();
                             DialogFactory.DialogListener dialogListener = dialog -> ListTicketFragment.this.getActivity().onBackPressed();
                             errorDialog = DialogFactory.getErrorDialog(this.getContext(), Tools.parseError(throwable), dialogListener);
                             errorDialog.show();

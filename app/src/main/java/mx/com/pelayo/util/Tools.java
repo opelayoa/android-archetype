@@ -90,6 +90,27 @@ public class Tools {
             error = "Se agoto el tiempo, intentalo más tarde";
         } else if (throwable instanceof IOException){
             error = "Ocurrio un error inesperado, intentelo más tarde";
+        } else {
+            error = "Error interno, intentelo más tarde.";
+        }
+        return error;
+    }
+
+    public static String parseError(int code) {
+        String error = "";
+        switch (code){
+            case 500:
+                error = "Error Interno del Servidor";
+                break;
+            case 404:
+                error = "Recurso no encontrado";
+                break;
+            case 401:
+                error = "Necesitas autenticación";
+                break;
+            case 403:
+                error = "No tienes permisos para ver este recurso";
+                break;
         }
         return error;
     }

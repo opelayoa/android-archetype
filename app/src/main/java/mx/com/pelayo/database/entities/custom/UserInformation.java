@@ -15,6 +15,9 @@ public class UserInformation {
     private String puesto_desc;
     private Integer departamentoId;
     private String departamentoDesc;
+    private Integer almacenId;
+    private String almacenDesc;
+    private String numero3b;
 
     public Integer getId() {
         return id;
@@ -126,5 +129,29 @@ public class UserInformation {
 
     public void setDepartamentoDesc(String departamentoDesc) {
         this.departamentoDesc = departamentoDesc;
+    }
+
+    public Integer getAlmacenId() {
+        return almacenId;
+    }
+
+    public void setAlmacenId(Integer almacenId) {
+        this.almacenId = almacenId;
+    }
+
+    public String getAlmacenDesc() {
+        return almacenDesc;
+    }
+
+    public void setAlmacenDesc(String almacenDesc) {
+        this.almacenDesc = almacenDesc;
+    }
+
+    public String getNumero3b() {
+        return numero3b;
+    }
+
+    public void setNumero3b(String numero3b) {
+        this.numero3b = numero3b;
     }
 }

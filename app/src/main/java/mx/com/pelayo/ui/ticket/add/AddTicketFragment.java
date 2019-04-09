@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -427,7 +428,7 @@ public class AddTicketFragment extends Fragment {
 
     private void configPlace(View view) {
         place = view.findViewById(R.id.place);
-        place.setText(usuarioInfo.getRegionId() + " - " + usuarioInfo.getRegionDesc());
+        place.setText(String.format("%s - %s", usuarioInfo.getNumero3b(), usuarioInfo.getAlmacenDesc()));
         disableView(place);
     }
 
@@ -508,8 +509,8 @@ public class AddTicketFragment extends Fragment {
         ticketInsert.setDiagnosticoId(diagnosticId);
         ticketInsert.setDistrito(districtName);
         ticketInsert.setFechaApertura(new Date());
-        ticketInsert.setLugarId(regionId);
-        ticketInsert.setLugarName(regionName);
+        ticketInsert.setLugarId(usuarioInfo.getAlmacenId());
+        ticketInsert.setLugarName(String.format("%s - %s", usuarioInfo.getNumero3b(), usuarioInfo.getAlmacenDesc()));
         ticketInsert.setCapturistaName(usuarioInfo.getApellido() + ", " + usuarioInfo.getNombre());
         ticketInsert.setTecnicoId(expertId);
         ticketInsert.setTecnicoName(expertName);
@@ -533,9 +534,19 @@ public class AddTicketFragment extends Fragment {
                     @Override
                     public void onNext(Response<TicketResponse> ticketResponse) {
                         progressDialog.dismiss();
-                        DialogFactory.DialogListener dialogListener = dialog -> AddTicketFragment.this.getActivity().onBackPressed();
-                        infoDialog = DialogFactory.getInfoDialog(AddTicketFragment.this.getContext(), "Se generó el ticket correctamente: " + ticketResponse.body().getTicketId(), dialogListener);
-                        infoDialog.show();
+                        DialogFactory.DialogListener dialogListener = dialog -> {
+                            dialog.dismiss();
+                            AddTicketFragment.this.getActivity()
+                                    .getSupportFragmentManager()
+                                    .popBackStack("type", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        };
+                        if (ticketResponse.code() == 201) {
+                            infoDialog = DialogFactory.getInfoDialog(AddTicketFragment.this.getContext(), "Se generó el ticket correctamente: " + ticketResponse.body().getTicketId(), dialogListener);
+                            infoDialog.show();
+                        } else {
+                            errorDialog = DialogFactory.getErrorDialog(AddTicketFragment.this.getContext(), Tools.parseError(ticketResponse.code()));
+                            errorDialog.show();
+                        }
                     }
 
                     @Override

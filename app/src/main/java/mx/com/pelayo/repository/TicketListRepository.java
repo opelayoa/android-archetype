@@ -31,7 +31,7 @@ public class TicketListRepository {
     }
 
     public Observable<List<TicketSummary>> getTicketsSummary(Integer userId, Integer ticketStateId) {
-        return tdeService.getTicketsSummary(2242, ticketStateId);
+        return tdeService.getTicketsSummary(userId, ticketStateId);
     }
 
     public Observable<UserInformation> getUserInformation() {

@@ -111,7 +111,7 @@ public class TicketDetailFragment extends Fragment {
         updateDate = view.findViewById(R.id.updateDate);
         closingDate = view.findViewById(R.id.closingDate);
         observations = view.findViewById(R.id.observations);
-        capturist = view.findViewById(R.id.observations);
+        capturist = view.findViewById(R.id.capturist);
         manualEmail = view.findViewById(R.id.manualMail);
         projectStatus = view.findViewById(R.id.projectStatus);
         progressDialog = DialogFactory.getProgressDialog(this.getContext(), "Espere...");
