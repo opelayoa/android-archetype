@@ -1,5 +1,6 @@
 package mx.com.pelayo.ui;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,20 +19,29 @@ import android.widget.TextView;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 import mx.com.pelayo.App;
 import mx.com.pelayo.R;
 import mx.com.pelayo.ui.home.HomeFragment;
+import mx.com.pelayo.ui.util.DialogFactory;
+import mx.com.pelayo.util.Tools;
 import mx.com.pelayo.viewmodel.SecurityViewModel;
+import mx.com.pelayo.viewmodel.SyncViewModel;
 
 import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @Inject
-    SecurityViewModel securityViewModel;
+    protected SecurityViewModel securityViewModel;
 
     @Inject
-    SharedPreferences sharedPreferences;
+    protected SharedPreferences sharedPreferences;
+
+    @Inject
+    protected SyncViewModel syncViewModel;
 
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
@@ -40,6 +50,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinearLayout banner;
     private TextView labelName;
     private TextView labelPuesto;
+
+    private Dialog progressDialog;
+    private Dialog errorDialog;
+    private Dialog infoDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
         if (id == R.id.nav_sync) {
+            sync();
         } else if (id == R.id.nav_sign_out) {
             sharedPreferences
                     .edit()
@@ -155,5 +170,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void sync() {
+        progressDialog = DialogFactory.getProgressDialog(this, "Sincronizando...");
+        progressDialog.show();
+        syncViewModel.sync()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DisposableObserver() {
+
+                    @Override
+                    public void onNext(Object o) {
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        progressDialog.dismiss();
+                        errorDialog = DialogFactory.getErrorDialog(MainActivity.this, Tools.parseError(throwable));
+                        errorDialog.show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        progressDialog.dismiss();
+                        infoDialog = DialogFactory.getInfoDialog(MainActivity.this, "Se realizó la sincronización correctamente");
+                        infoDialog.show();
+                    }
+                });
     }
 }
