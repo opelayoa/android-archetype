@@ -1,20 +1,31 @@
 package mx.com.pelayo.ui.ticket.add;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.arch.persistence.room.util.StringUtil;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.collect.Iterables;
 
@@ -45,6 +56,9 @@ public class AddTicketFragment extends Fragment {
     private static final String SYMPTOM_PARAM = "symptom_id";
     private static final String DIAGNOSTIC_PARAM = "diagnostic_id";
 
+    private static final int CAMERA_REQUEST = 1888;
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
+
     @Inject
     AddTicketViewModel addTicketViewModel;
 
@@ -70,6 +84,10 @@ public class AddTicketFragment extends Fragment {
     private Dialog progressDialog;
     private Dialog errorDialog;
     private Dialog infoDialog;
+
+    private ImageView image;
+    private TextView emptyImage;
+    private Button buttonCamera;
 
     private int typeId;
     private int symptomId;
@@ -131,6 +149,7 @@ public class AddTicketFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_ticket, container, false);
         this.usuarioInfo = addTicketViewModel.getUsuarioInfo();
+        configImageCapture(view);
         configRegions(view);
         configApplicants(view);
         configExpert(view);
@@ -453,6 +472,28 @@ public class AddTicketFragment extends Fragment {
         }
     }
 
+    private void configImageCapture(View view) {
+        emptyImage = view.findViewById(R.id.emptyImage);
+        image = view.findViewById(R.id.image);
+        buttonCamera = view.findViewById(R.id.buttonCamera);
+        buttonCamera.setOnClickListener(v -> {
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            this.startActivityForResult(cameraIntent, CAMERA_REQUEST);
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.i("XxX", "requestCode: " + requestCode + " CAMERA_REQUEST: " + CAMERA_REQUEST + " resultCode: " + resultCode + " Activity.RESULT_OK" + Activity.RESULT_OK);
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            image.setImageBitmap(photo);
+            image.setVisibility(View.VISIBLE);
+            emptyImage.setVisibility(View.GONE);
+        }
+    }
+
     private void configRegionStates(View view) {
         options = view.findViewById(R.id.options);
         optionStore = view.findViewById(R.id.optStore);
@@ -491,7 +532,26 @@ public class AddTicketFragment extends Fragment {
 
     }
 
+    private boolean validateForm() {
+        if (!approved.isChecked()) {
+            errorDialog = DialogFactory.getErrorDialog(AddTicketFragment.this.getContext(), "Debes aprovar el ticket.");
+            errorDialog.show();
+            return false;
+        } else {
+            if (comment.getText().toString().isEmpty()) {
+                errorDialog = DialogFactory.getErrorDialog(AddTicketFragment.this.getContext(), "Debes capturar tus comentarios.");
+                errorDialog.show();
+                return false;
+            }
+
+        }
+        return true;
+    }
+
     private void saveTicket() {
+        if (!validateForm()) {
+            return;
+        }
         progressDialog = DialogFactory.getProgressDialog(this.getContext(), "Espere...");
         progressDialog.show();
         TicketInsert ticketInsert = new TicketInsert();

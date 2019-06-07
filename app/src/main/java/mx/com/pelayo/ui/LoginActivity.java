@@ -1,13 +1,20 @@
 package mx.com.pelayo.ui;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -24,6 +31,9 @@ import mx.com.pelayo.viewmodel.SyncViewModel;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "XxX";
+
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
+
     @Inject
     SecurityViewModel securityViewModel;
 
@@ -47,7 +57,16 @@ public class LoginActivity extends AppCompatActivity {
         login = findViewById(R.id.login);
         login.setOnClickListener(this::login);
 
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+            }
+        }
+
     }
+
 
     @SuppressLint("CheckResult")
     private void login(View view) {
@@ -105,5 +124,28 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }
                 });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_CAMERA_PERMISSION_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+                    Toast.makeText(this, "Error, no se acepto.", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 }

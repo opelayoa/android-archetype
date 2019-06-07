@@ -1,8 +1,11 @@
 package mx.com.pelayo.ui;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -16,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -33,6 +37,8 @@ import mx.com.pelayo.viewmodel.SyncViewModel;
 import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+
 
     @Inject
     protected SecurityViewModel securityViewModel;
@@ -81,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .addToBackStack("home")
                     .commit();
         }
+
+
 
     }
 

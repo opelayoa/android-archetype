@@ -11,6 +11,7 @@
     <string name="icon_check_circle">&#xeb39;</string>
     <string name="icon_times_circle">&#xedd9;</string>
     <string name="icon_exclamation_circle">&#xebbf;</string>
+    <string name="icon_camera">&#xeb17;</string>
     <string name="stores_empty">Sin información de tiendas</string>
     <string name="emptyUsers">No existen usuarios asignados al Departamento.</string>
     <string name="emptyRegions">No existe Región</string>
